@@ -1,11 +1,20 @@
 #include <ncurses.h>
+#include<form.h>
+#include <assert.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
 void print_menu();
+void display_add_book();
+void catch(int ch, FORM *form, FIELD *fields[17]);
+static char* trim_whitespaces(char *str);
+
 int main(void){	
     //system("resize -s 30 80");
 	initscr();
     noecho();
     cbreak();
-
+    //curs_set(0);//kursor sie nie pokaże
     print_menu();
 
 
@@ -19,6 +28,7 @@ int main(void){
 
 void print_menu()
 {
+	curs_set(0);
     int xMax, yMax;
     getmaxyx(stdscr, yMax,xMax);
 
@@ -79,5 +89,158 @@ void print_menu()
                 break;
     }
     clear();
+	if(highlight==4)
+		display_add_book();
     printw("your choice was %s", choices[highlight]);
+}
+static char* trim_whitespaces(char *str)
+{
+	char *end;
+
+	// trim leading space
+	while(isspace(*str))
+		str++;
+
+	if(*str == 0) // all spaces?
+		return str;
+
+	// trim trailing space
+	end = str + strnlen(str, 128) - 1;
+
+	while(end > str && isspace(*end))
+		end--;
+
+	// write new null terminator
+	*(end+1) = '\0';
+
+	return str;
+}
+
+void catch(int ch, FORM *form, FIELD *fields[17])
+{
+	int i;
+
+	switch (ch) {
+		case KEY_F(2):
+			// Or the current field buffer won't be sync with what is displayed
+			form_driver(form, REQ_NEXT_FIELD);
+			form_driver(form, REQ_PREV_FIELD);
+			move(LINES-3, 2);
+
+			for (i = 0; fields[i]; i++) {
+				printw("%s", printw("%s", trim_whitespaces(field_buffer(fields[i], 0))));
+
+				if (field_opts(fields[i]) & O_ACTIVE)
+					printw("\"\t");
+				else
+					printw(": \"");
+			}
+
+			refresh();
+			pos_form_cursor(form);
+			break;
+
+		case KEY_DOWN:
+			form_driver(form, REQ_NEXT_FIELD);
+			form_driver(form, REQ_END_LINE);
+			break;
+
+		case KEY_UP:
+			form_driver(form, REQ_PREV_FIELD);
+			form_driver(form, REQ_END_LINE);
+			break;
+
+		case KEY_LEFT:
+			form_driver(form, REQ_PREV_CHAR);
+			break;
+
+		case KEY_RIGHT:
+			form_driver(form, REQ_NEXT_CHAR);
+			break;
+
+		// Delete the char before cursor
+		case KEY_BACKSPACE:
+		case 127:
+			form_driver(form, REQ_DEL_PREV);
+			break;
+
+		// Delete the char under the cursor
+		case KEY_DC:
+			form_driver(form, REQ_DEL_CHAR);
+			break;
+
+		default:
+			form_driver(form, ch);
+			break;
+	}
+
+	refresh();
+}
+void display_add_book()
+{
+	curs_set(1);
+	//int xMax, yMax;
+    //getmaxyx(stdscr, yMax,xMax);
+	keypad(stdscr, true);
+	FIELD *fields[17];
+	FORM *myForm;
+	//char *buttones[]={"next", "cancel"};
+    //WINDOW *fWindow;
+	//window settings
+	//fWindow=newwin(yMax-3, xMax, 0, 0);
+	//box(fWindow, 0, 0);
+	//form settings
+	int pom_pos=2;
+	for(int i=0;i<16;i++)
+	{
+		fields[i]=new_field(1,20,pom_pos,2,0,0);
+		i++;
+		fields[i]=new_field(1,50,pom_pos,17,0,0);
+		pom_pos+=2;
+	}
+	fields[16]=NULL;//as docs say
+
+	set_field_buffer(fields[0],0, "proba:");
+	set_field_buffer(fields[2],0, "proba:");
+	set_field_buffer(fields[4],0, "proba:");
+	set_field_buffer(fields[6],0, "proba:");
+	set_field_buffer(fields[8],0, "proba:");
+	set_field_buffer(fields[10],0, "proba:");
+	set_field_buffer(fields[12],0, "proba:");
+	set_field_buffer(fields[14],0, "proba:");
+
+	for(int i=1;i<16;i=i+2)
+	{
+		set_field_back(fields[i], A_UNDERLINE);
+	}
+	for(int i=0;i<16;i++)
+	{
+		set_field_opts(fields[i], O_VISIBLE | O_PUBLIC | O_AUTOSKIP);
+		i++;
+		set_field_opts(fields[i], O_VISIBLE | O_PUBLIC | O_EDIT | O_ACTIVE);
+	}
+
+	myForm=new_form(fields);
+	//set_form_win(myForm, fWindow);
+//	set_from_sub(myForm,derwin(win_form, 100,100,1,1));
+	post_form(myForm);
+	mvprintw(20, 30, "f1 to cancl f2 to save");
+    refresh();
+  //  wrefresh(fWindow);
+	//wrefresh(myForm);
+	
+	int ch;
+	while((ch=getch())!= KEY_F(1))
+		catch(ch, myForm, fields);
+	getch();
+	unpost_form(myForm);
+	free_form(myForm);
+	for(int i=0;i<17;i++)
+	{
+		free_field(fields[i]);
+	}
+	//delwin(fWindow);
+	clear();
+	return;
+
 }
