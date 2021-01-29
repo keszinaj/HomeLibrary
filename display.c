@@ -111,7 +111,7 @@ static char* trim_whitespaces(char *str)
 		end--;
 
 	// write new null terminator
-	*(end+1) = '\0';
+	*(end+1) = '\0'; //is it good idea???
 
 	return str;
 }
@@ -179,17 +179,9 @@ void catch(int ch, FORM *form, FIELD *fields[17])
 void display_add_book()
 {
 	curs_set(1);
-	//int xMax, yMax;
-    //getmaxyx(stdscr, yMax,xMax);
 	keypad(stdscr, true);
 	FIELD *fields[17];
 	FORM *myForm;
-	//char *buttones[]={"next", "cancel"};
-    //WINDOW *fWindow;
-	//window settings
-	//fWindow=newwin(yMax-3, xMax, 0, 0);
-	//box(fWindow, 0, 0);
-	//form settings
 	int pom_pos=2;
 	for(int i=0;i<16;i++)
 	{
@@ -200,14 +192,14 @@ void display_add_book()
 	}
 	fields[16]=NULL;//as docs say
 
-	set_field_buffer(fields[0],0, "proba:");
-	set_field_buffer(fields[2],0, "proba:");
-	set_field_buffer(fields[4],0, "proba:");
-	set_field_buffer(fields[6],0, "proba:");
-	set_field_buffer(fields[8],0, "proba:");
-	set_field_buffer(fields[10],0, "proba:");
-	set_field_buffer(fields[12],0, "proba:");
-	set_field_buffer(fields[14],0, "proba:");
+	set_field_buffer(fields[0],0, "Title:");
+	set_field_buffer(fields[2],0, "Author:");
+	set_field_buffer(fields[4],0, "Red [yes/no]:");
+	set_field_buffer(fields[6],0, "Pages:");
+	set_field_buffer(fields[8],0, "Stars[1-6]:");
+	set_field_buffer(fields[10],0, "Where is:");
+	set_field_buffer(fields[12],0, "Notes:");
+	set_field_buffer(fields[14],0, "Landed[yes/no]:");
 
 	for(int i=1;i<16;i=i+2)
 	{
@@ -221,14 +213,10 @@ void display_add_book()
 	}
 
 	myForm=new_form(fields);
-	//set_form_win(myForm, fWindow);
-//	set_from_sub(myForm,derwin(win_form, 100,100,1,1));
 	post_form(myForm);
 	mvprintw(20, 30, "f1 to cancl f2 to save");
+	curs_set(1);
     refresh();
-  //  wrefresh(fWindow);
-	//wrefresh(myForm);
-	
 	int ch;
 	while((ch=getch())!= KEY_F(1))
 		catch(ch, myForm, fields);
@@ -239,7 +227,6 @@ void display_add_book()
 	{
 		free_field(fields[i]);
 	}
-	//delwin(fWindow);
 	clear();
 	return;
 
