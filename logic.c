@@ -18,7 +18,7 @@ struct books{
     };
 typedef struct books book_t;
 
-int book_index=0;
+int book_index=0; //zamien to za index!!!!!
 
 book_t *load_data_base();
 void print_db(book_t *f_book);

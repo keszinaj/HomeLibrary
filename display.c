@@ -6,9 +6,10 @@
 #include <ctype.h>
 void print_menu();
 void display_add_book();
-void catch(int ch, FORM *form, FIELD *fields[17]);
+void lcatch(int ch, FORM *form, FIELD *fields[17]);
 static char* trim_whitespaces(char *str);
-
+void init_scr();
+/**
 int main(void){	
     //system("resize -s 30 80");
 	initscr();
@@ -24,7 +25,22 @@ int main(void){
 	endwin();			
 	return 0;
 }
+*/
+void init_scr()
+{
+	//system("resize -s 30 80");
+	initscr();
+    noecho();
+    cbreak();
+    //curs_set(0);//kursor sie nie pokaże
+    print_menu();
 
+
+
+    //upewniamy się że program poczeka zanim się zamknie
+    getch();
+	endwin();
+}
 
 void print_menu()
 {
@@ -116,7 +132,7 @@ static char* trim_whitespaces(char *str)
 	return str;
 }
 
-void catch(int ch, FORM *form, FIELD *fields[17])
+void lcatch(int ch, FORM *form, FIELD *fields[17])
 {
 	int i;
 
@@ -219,7 +235,7 @@ void display_add_book()
     refresh();
 	int ch;
 	while((ch=getch())!= KEY_F(1))
-		catch(ch, myForm, fields);
+		lcatch(ch, myForm, fields);
 	getch();
 	unpost_form(myForm);
 	free_form(myForm);
