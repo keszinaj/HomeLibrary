@@ -2,5 +2,6 @@
 
 int main()
 {
+    init_scr();
     return 0;
 }

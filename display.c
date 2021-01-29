@@ -9,23 +9,9 @@ void display_add_book();
 void lcatch(int ch, FORM *form, FIELD *fields[17]);
 static char* trim_whitespaces(char *str);
 void init_scr();
-/**
-int main(void){	
-    //system("resize -s 30 80");
-	initscr();
-    noecho();
-    cbreak();
-    //curs_set(0);//kursor sie nie pokaże
-    print_menu();
 
 
 
-    //upewniamy się że program poczeka zanim się zamknie
-    getch();
-	endwin();			
-	return 0;
-}
-*/
 void init_scr()
 {
 	//system("resize -s 30 80");
