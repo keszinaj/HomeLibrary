@@ -29,4 +29,5 @@ void user_add_data(book_t *f_book);
 book_t *rmv_if(book_t *book_list, int id);
 book_t *save(book_t *book_list);
 void save_one_book(FILE *db, book_t *book);
+int number_of_books(book_t *first_book);
 #endif

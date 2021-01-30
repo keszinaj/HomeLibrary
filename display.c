@@ -1,25 +1,31 @@
 #include <ncurses.h>
 #include<form.h>
+#include<menu.h>
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
-void print_menu();
+#include "logic.h"
+
+void print_menu(book_t *first_book);
 void display_add_book();
 void lcatch(int ch, FORM *form, FIELD *fields[17]);
 static char* trim_whitespaces(char *str);
-void init_scr();
+void init_scr(book_t *first_book);
+void print_in_middle(WINDOW *win, int starty, int startx, int width, char *string);
+void display_books(book_t *first_book);
+
+//chyba trzeba potem zrobić zmienna ogolna first book
 
 
-
-void init_scr()
+void init_scr(book_t *first_book)
 {
 	//system("resize -s 30 80");
 	initscr();
     noecho();
     cbreak();
     //curs_set(0);//kursor sie nie pokaże
-    print_menu();
+    print_menu(first_book);
 
 
 
@@ -28,7 +34,7 @@ void init_scr()
 	endwin();
 }
 
-void print_menu()
+void print_menu(book_t *first_book)
 {
 	curs_set(0);
     int xMax, yMax;
@@ -91,6 +97,8 @@ void print_menu()
                 break;
     }
     clear();
+	if(highlight==0)
+		display_books(first_book);
 	if(highlight==4)
 		display_add_book();
     printw("your choice was %s", choices[highlight]);
@@ -232,4 +240,130 @@ void display_add_book()
 	clear();
 	return;
 
+}
+
+
+
+void display_books(book_t *first_book)
+{
+	initscr();
+	
+        cbreak();
+        noecho();
+		keypad(stdscr, TRUE);
+	//val
+	ITEM **books;
+	MENU *books_menu;
+	int n_books, i, c;
+	WINDOW *my_books_menu;
+	//here in future will be colors edc
+
+	//initialize item
+	n_books=number_of_books(first_book)+1;
+	books = (ITEM **)calloc(n_books, sizeof(ITEM *));
+        for(i = 0; i < n_books; ++i)//czy nie wychodzi za book??
+		{
+				if(first_book==NULL)
+				{
+					books[i] = new_item((char *)NULL,(char *) NULL);
+				}
+				else
+				{
+               		books[i] = new_item(first_book->title, first_book->author);
+					first_book=first_book->next;
+				}
+		}
+
+	books_menu = new_menu((ITEM **)books);
+
+	// Create the window to be associated with the menu and give size
+        my_books_menu = newwin(20, 78, 1, 1);
+        keypad(my_books_menu, TRUE);
+     
+	/* Set main window and sub window */
+        set_menu_win(books_menu, my_books_menu);
+        set_menu_sub(books_menu, derwin(my_books_menu, 17, 76, 3, 1));//max height and width in subwindow
+		set_menu_format(books_menu, 16, 1);//16 row 1 column
+			
+	/* Set menu mark to the string " * " */
+        set_menu_mark(books_menu, " * ");
+
+	/* Print a border around the main window and print a title */
+    box(my_books_menu, 0, 0);
+	print_in_middle(my_books_menu, 1, 0, 78, "Your Books");
+	mvwaddch(my_books_menu, 2, 0, ACS_LTEE);
+	mvwhline(my_books_menu, 2, 1, ACS_HLINE, 76);
+	mvwaddch(my_books_menu, 2, 78, ACS_RTEE);
+        
+	/* Post the menu */
+	post_menu(books_menu);
+	wrefresh(my_books_menu);
+	
+	//attron(COLOR_PAIR(2));
+	mvprintw(LINES - 2, 0, "Use PageUp and PageDown to scoll down or up a page of items");
+	mvprintw(LINES - 1, 0, "Arrow Keys to navigate (F1 to Exit)");
+	//attroff(COLOR_PAIR(2));
+	refresh();
+
+	while((c = wgetch(my_books_menu)) != KEY_F(1))
+	{       switch(c)
+	        {	case KEY_DOWN:
+				menu_driver(books_menu, REQ_DOWN_ITEM);
+				break;
+			case KEY_UP:
+				menu_driver(books_menu, REQ_UP_ITEM);
+				break;
+			case KEY_NPAGE:
+				menu_driver(books_menu, REQ_SCR_DPAGE);
+				break;
+			case KEY_PPAGE:
+				menu_driver(books_menu, REQ_SCR_UPAGE);
+				break;
+			case 10:
+			{	move(20, 0);
+				clrtoeol();
+				use_default_colors();
+				mvprintw(20, 0, "Item selected is : %s", 
+						item_name(current_item(books_menu)));
+				pos_menu_cursor(books_menu);
+				
+
+				refresh();
+			}
+				break;
+		}
+                wrefresh(my_books_menu);
+	}	
+
+	/* Unpost and free all the memory taken up */
+        unpost_menu(books_menu);
+        free_menu(books_menu);
+        for(i = 0; i < n_books; ++i)
+                free_item(books[i]);
+	endwin();
+}
+
+void print_in_middle(WINDOW *win, int starty, int startx, int width, char *string)
+{	int length, x, y;
+	float temp;
+
+	if(win == NULL)
+		win = stdscr;
+	getyx(win, y, x);
+	if(startx != 0)
+		x = startx;
+	if(starty != 0)
+		y = starty;
+	if(width == 0)
+		width = 80;
+
+	length = strlen(string);
+	temp = (width - length)/ 2;
+	x = startx + (int)temp;
+	//watrron
+	mvwprintw(win, y, x, "%s", string);
+	//watroff
+	refresh();
+
+	
 }

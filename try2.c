@@ -30,24 +30,19 @@ book_t *save(book_t *book_list);
 void save_one_book(FILE *db, book_t *book);
 int number_of_books(book_t *first_book);
 int index=0;
-/**
-to do:
--dodaj index~~DONE
--https://rosettacode.org/wiki/Simple_database
--zapisywanie wszystkiego w pliku~ DONE
--walidacja zapisanych danych żeby nie miały "
--szukanie
--pożyczone oraz ich edytowanie
--DEFAKTO można już zacząć zabierać się za frontend
+
+
 
 int main()
 {
+    int nimh;
     printf("Program zarządzajacy ksiazkami\n");
     printf("Wpisz\n1 - by wypisać baze danych\n2- by dopisać książke do  bazy danych -3 aby usunac ksiazke po id\n-4 by wyjsć z programu\n");
     int choice;
     book_t *data_base_list=NULL;
     data_base_list=load_data_base();
-
+    nimh=number_of_books(data_base_list);
+    printf("num of book %d\n", nimh);
 
     while(true)
     {
@@ -90,7 +85,7 @@ int main()
     data_base_list=add_b(data_base_list);
     return 0;
 }
-*/
+
 book_t *load_data_base()
 {
     FILE *db;
@@ -311,16 +306,3 @@ int number_of_books(book_t *first_book)
     }
     return n;
 }
-
-/**
-"Bardzo potrzebna mi jest przyjazn Pana","Zbigniew Herbert","2","Polka nad lozkiem","182","4","listy","listy","0","cos"
-"Folwark zwierzęcy ","George Orwell","7","Szafa w salonie","128","5","moje notatki","klasyka","1","Slawek"
-"Folwark zwierzęcy ","George Orwell","7","Szafa w salonie","128","5","moje notatki","klasyka","1","Slawek"
-"Bardzo potrzebna mi jest przyjazn Pana","Zbigniew Herbert","2","Polka nad lozkiem","182","4","listy","listy","0","cos"
-
-**/
-
-
-//void search_book(book_t *book_list)
-
-

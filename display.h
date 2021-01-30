@@ -7,10 +7,13 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include "logic.h"
 
-void print_menu();
+void print_menu(book_t *first_book);
 void display_add_book();
 void lcatch(int ch, FORM *form, FIELD *fields[17]);
 static char* trim_whitespaces(char *str);
-void init_scr();
+void init_scr(book_t *first_book);
+void print_in_middle(WINDOW *win, int starty, int startx, int width, char *string);
+void display_books(book_t *first_book);
 #endif
