@@ -52,5 +52,8 @@ Mkfile.old
 dkms.conf
 # Other file
 try.c
-output
-test
+#next
+try2.c
+output*
+try*
+test*

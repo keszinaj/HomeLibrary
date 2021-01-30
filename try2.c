@@ -29,6 +29,7 @@ book_t *rmv_if(book_t *book_list, int id);
 book_t *save(book_t *book_list);
 void save_one_book(FILE *db, book_t *book);
 int number_of_books(book_t *first_book);
+int number_of_lent_books(book_t *first_book);
 int index=0;
 
 
@@ -41,7 +42,7 @@ int main()
     int choice;
     book_t *data_base_list=NULL;
     data_base_list=load_data_base();
-    nimh=number_of_books(data_base_list);
+    nimh=number_of_lent_books(data_base_list);
     printf("num of book %d\n", nimh);
 
     while(true)
@@ -235,7 +236,19 @@ void user_add_data(book_t *f_book)
     f_book->next=NULL;
     index++;
 }
-
+int number_of_lent_books(book_t *first_book)
+{
+    int n=0;
+    while(first_book!=NULL)
+    {
+        if(first_book->lended==1)
+        {
+            n++;
+        }
+        first_book=first_book->next;
+    }
+    return n;
+}
 book_t *rmv_if(book_t *book_list, int id)
 {
     if(book_list==NULL)

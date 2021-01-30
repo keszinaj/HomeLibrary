@@ -12,7 +12,7 @@ struct books{
     char where_is[100];
     char notes[500];
     char tag[30];
-    int lended;
+    int lent;
     char whom_l[35];
     struct books* next;
     };
@@ -29,6 +29,8 @@ book_t *rmv_if(book_t *book_list, int id);
 book_t *save(book_t *book_list);
 void save_one_book(FILE *db, book_t *book);
 int number_of_books(book_t *first_book);
+int number_of_lent_books(book_t *first_book);
+book_t *return_book_struct(char *title, book_t *first_book);
 int index=0;
 /**
 to do:
@@ -127,7 +129,7 @@ book_t *load_data_base()
     fscanf(db, " \"%[^\"]\",", first_book->notes);
     fscanf(db, " \"%[^\"]\",", first_book->tag);
     fscanf(db, " \"%[^\"]\",", number_string);
-    sscanf(number_string, "%d", &first_book->lended);
+    sscanf(number_string, "%d", &first_book->lent);
     fscanf(db, " \"%[^\"]\" ", first_book->whom_l);
     first_book->index_number=index;
     first_book->next=NULL;
@@ -159,7 +161,7 @@ book_t *load_data_base()
         fscanf(db, " \"%[^\"]\",", new_book->notes);
         fscanf(db, " \"%[^\"]\",", new_book->tag);
         fscanf(db, " \"%[^\"]\",", number_string);
-        sscanf(number_string, "%d", &new_book->lended);
+        sscanf(number_string, "%d", &new_book->lent);
         fscanf(db, " \"%[^\"]\" ", new_book->whom_l);
         new_book->index_number=index;
         index++;
@@ -195,7 +197,7 @@ void print_db_slot(book_t *f_book)
     printf("num_pages: %d\n", f_book->num_pages);
     printf("notes: %s\n", f_book->notes);
     printf("tag: %s\n", f_book->tag);
-    printf("lended: %d\n", f_book->lended);
+    printf("lent: %d\n", f_book->lent);
     printf("whom_l: %s\n", f_book->whom_l);
 }
 
@@ -232,8 +234,8 @@ void user_add_data(book_t *f_book)
     scanf("%s", f_book->notes);
     printf("tag:\n");
     scanf("%s", f_book->tag);
-    printf("lended:\n");
-    scanf("%d", &f_book->lended);
+    printf("lendt:\n");
+    scanf("%d", &f_book->lent);
     printf("whom_l:\n");
     scanf("%s", f_book->whom_l);
     f_book->index_number=index;
@@ -297,7 +299,7 @@ book_t *save(book_t *book_list)
 }
 void save_one_book(FILE *db, book_t *book)
 {
-    fprintf(db, "\"%s\",\"%s\",\"%d\",\"%s\",\"%d\",\"%d\",\"%s\",\"%s\",\"%d\",\"%s\" \n", book->title, book->author, book->red, book->where_is, book->num_pages, book->stars, book->notes, book->tag, book->lended, book->whom_l);
+    fprintf(db, "\"%s\",\"%s\",\"%d\",\"%s\",\"%d\",\"%d\",\"%s\",\"%s\",\"%d\",\"%s\" \n", book->title, book->author, book->red, book->where_is, book->num_pages, book->stars, book->notes, book->tag, book->lent, book->whom_l);
 }
 
 
@@ -311,7 +313,31 @@ int number_of_books(book_t *first_book)
     }
     return n;
 }
-
+int number_of_lent_books(book_t *first_book)
+{
+    int n=0;
+    while(first_book!=NULL)
+    {
+        if(first_book->lent==1)
+        {
+            n++;
+        }
+        first_book=first_book->next;
+    }
+    return n;
+}
+book_t *return_book_struct(char *title, book_t *first_book)
+{
+    if(first_book==NULL)
+        return NULL;
+    while(first_book!=NULL)
+    {
+        if(strcmp(title, first_book->title))
+            return first_book;
+        first_book=first_book->next;
+    }
+    return NULL;
+}
 /**
 "Bardzo potrzebna mi jest przyjazn Pana","Zbigniew Herbert","2","Polka nad lozkiem","182","4","listy","listy","0","cos"
 "Folwark zwierzęcy ","George Orwell","7","Szafa w salonie","128","5","moje notatki","klasyka","1","Slawek"

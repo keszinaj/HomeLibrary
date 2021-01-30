@@ -15,7 +15,7 @@ struct books{
     char where_is[100];
     char notes[500];
     char tag[30];
-    int lended;
+    int lent;
     char whom_l[35];
     struct books* next;
     };
@@ -30,4 +30,6 @@ book_t *rmv_if(book_t *book_list, int id);
 book_t *save(book_t *book_list);
 void save_one_book(FILE *db, book_t *book);
 int number_of_books(book_t *first_book);
+int number_of_lent_books(book_t *first_book);
+book_t *return_book_struct(char *title, book_t *first_book);
 #endif
