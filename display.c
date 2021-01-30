@@ -49,6 +49,11 @@ void print_menu(book_t *first_book)
     box(menuwin, 0, 0);//print box
     box(logowin, 0, 0);
     refresh();
+	mvwprintw(logowin, 1,1, "_    _");
+	mvwprintw(logowin,1, 2 ,"  | |  | | ");
+	//wprintw(logowin, "  | |__| | ___  _ __ ___   ___ \n");
+	//wprintw(logowin, "  |  __  |/ _ \\| '_ ` _ \\ / _ \\ \n");
+	//wprintw(logowin, "  | |  | | (_) | | | | | |  __/");
     wrefresh(menuwin);
     wrefresh(logowin);
 
@@ -385,16 +390,18 @@ void display_single_book(char *title, book_t *first_book)
 		return;
 	WINDOW *bookwin;
 	bookwin=newwin(20, 78, 1, 1);
+	//print nice window
 	box(bookwin, 0, 0);
 	print_in_middle(bookwin, 1, 0, 78, bookdis->title);
 	mvwaddch(bookwin, 2, 0, ACS_LTEE);
 	mvwhline(bookwin, 2, 1, ACS_HLINE, 76);
 	mvwaddch(bookwin, 2, 78, ACS_RTEE);
+	//display content from struct
 	mvwprintw(bookwin, 3, 2, "Author:");
 	mvwprintw(bookwin, 3, 10, bookdis->author);
 	mvwprintw(bookwin, 5, 2, "Number of pages:");
 	char stringol[15];
-	snprintf(stringol, 15, "%d", bookdis->num_pages);
+	snprintf(stringol, 15, "%d", bookdis->num_pages);//change int to string
 	mvwprintw(bookwin, 5, 20, stringol);
 	mvwprintw(bookwin, 7, 2, "Where is:");
 	mvwprintw(bookwin, 7, 11, bookdis->where_is);
@@ -417,8 +424,12 @@ void display_single_book(char *title, book_t *first_book)
 	}
 	mvwprintw(bookwin, yn, 2, "notes:");
 	mvwprintw(bookwin, yn, 10, bookdis->notes);
+
+
 	refresh();
 	wrefresh(bookwin);
+
+
 	getch();
 	
 }
@@ -533,3 +544,4 @@ void display_lent_books(book_t *first_book)
                 free_item(books[i]);
 	endwin();
 }
+
