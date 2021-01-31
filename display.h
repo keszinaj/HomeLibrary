@@ -9,7 +9,7 @@
 #include <ctype.h>
 #include "logic.h"
 
-void print_menu(book_t *first_book);
+int print_menu(book_t *first_book);
 void display_add_book();
 void lcatch(int ch, FORM *form, FIELD *fields[17]);
 static char* trim_whitespaces(char *str);

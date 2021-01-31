@@ -7,7 +7,7 @@
 #include <ctype.h>
 #include "logic.h"
 
-void print_menu(book_t *first_book);
+int print_menu(book_t *first_book);
 void display_add_book();
 void lcatch(int ch, FORM *form, FIELD *fields[17]);
 static char* trim_whitespaces(char *str);
@@ -18,25 +18,25 @@ void display_lent_books(book_t *first_book);
 void display_single_book(char *title, book_t *first_book);
 
 //chyba trzeba potem zrobić zmienna ogolna first book
-
+book_t *general_first_book;
 
 void init_scr(book_t *first_book)
 {
+	general_first_book=first_book;
 	//system("resize -s 30 80");
 	initscr();
     noecho();
     cbreak();
-    //curs_set(0);//kursor sie nie pokaże
-    print_menu(first_book);
-
-
-
-    //upewniamy się że program poczeka zanim się zamknie
-    getch();
+	int run=1;
+	while(run)
+	{
+      run=print_menu(general_first_book);
+	  clear();
+	}
 	endwin();
 }
 
-void print_menu(book_t *first_book)
+int print_menu(book_t *first_book)
 {
 	curs_set(0);
     int xMax, yMax;
@@ -65,15 +65,16 @@ void print_menu(book_t *first_book)
     "Tags",
     "Search",
     "Add Book",
-    "Delate Book",
-    "Info"
+    "Info",
+	"Save",
+    "Exit"
     };
     int choice;
     int highlight=0;
 
     while(1)
     {
-        for(int i=0;i<7;i++)
+        for(int i=0;i<8;i++)
         {
             if(i==highlight)
                 wattron(menuwin, A_REVERSE);
@@ -93,8 +94,8 @@ void print_menu(book_t *first_book)
                  case KEY_DOWN:
             {
                 highlight++;
-                if(highlight==7)
-                 highlight=6;
+                if(highlight==8)
+                 highlight=7;
                 break;
             }
             default:
@@ -105,11 +106,28 @@ void print_menu(book_t *first_book)
     }
     clear();
 	if(highlight==0)
+	{
 		display_books(first_book);
+		return 1;
+	}
 	else if(highlight==1)
+	{
 		display_lent_books(first_book);
-	if(highlight==4)
+		return 1;
+	}
+	else if(highlight==4)
+	{
 		display_add_book();
+		return 1;
+	}
+	else if(highlight==6)
+	{
+		save(general_first_book);
+	}
+	else if(highlight==7)
+	{
+		return 0;
+	}
     printw("your choice was %s", choices[highlight]);
 }
 static char* trim_whitespaces(char *str)
@@ -197,6 +215,7 @@ void lcatch(int ch, FORM *form, FIELD *fields[17])
 }
 void display_add_book()
 {
+	clear();
 	curs_set(1);
 	keypad(stdscr, true);
 	FIELD *fields[17];
@@ -219,6 +238,7 @@ void display_add_book()
 	set_field_buffer(fields[10],0, "Where is:");
 	set_field_buffer(fields[12],0, "Notes:");
 	set_field_buffer(fields[14],0, "Landed[yes/no]:");
+	//set_field_buffer(fields[16],0, "Landed[yes/no]:");
 
 	for(int i=1;i<16;i=i+2)
 	{
@@ -310,8 +330,8 @@ void display_books(book_t *first_book)
 	wrefresh(my_books_menu);
 	
 	//attron(COLOR_PAIR(2));
-	mvprintw(LINES - 2, 0, "Use PageUp and PageDown to scoll down or up a page of items");
-	mvprintw(LINES - 1, 0, "Arrow Keys to navigate (F1 to Exit)");
+	mvprintw(LINES - 2, 0, "Use Arrow Keys to navigate ");
+	mvprintw(LINES - 1, 0, "Use Enter to see more detail or use F1 to exit");
 	//attroff(COLOR_PAIR(2));
 	refresh();
 
@@ -335,11 +355,7 @@ void display_books(book_t *first_book)
 				temp[0]='\0';
 				strcat(temp, item_name(current_item(books_menu)));
 				display_single_book(temp, f_book);
-				move(20, 0);
 				clrtoeol();
-				use_default_colors();
-				mvprintw(20, 0, "Item selected is : %s", 
-						temp);
 				pos_menu_cursor(books_menu);
 				
 
@@ -430,7 +446,7 @@ void display_single_book(char *title, book_t *first_book)
 	wrefresh(bookwin);
 
 
-	getch();
+	//getch();
 	
 }
 
