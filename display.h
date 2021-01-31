@@ -11,7 +11,7 @@
 
 int print_menu(book_t *first_book);
 void display_add_book();
-void lcatch(int ch, FORM *form, FIELD *fields[17]);
+void lcatch(int ch, FORM *form, FIELD *fields[19]);
 static char* trim_whitespaces(char *str);
 void init_scr(book_t *first_book);
 void print_in_middle(WINDOW *win, int starty, int startx, int width, char *string);

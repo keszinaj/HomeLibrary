@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include<stdbool.h>
+#include <string.h>
 
 struct books{
     int index_number;//jeszcze nie wykorzystałem
@@ -24,8 +25,8 @@ typedef struct books book_t;
 book_t *load_data_base();
 void print_db(book_t *f_book);
 void print_db_slot(book_t *f_book);
-book_t *add_b(book_t *book_list);
-void user_add_data(book_t *f_book);
+book_t *add_b(book_t *book_list, char *title, char *author, char *red, char *wis, char *np, char *notes, char *le, char *tag, char *whom, char *star);
+void user_add_data(book_t *f_book,char *title, char *author, char *red, char *wis, char *np, char *notes, char *le, char *tag, char *whom, char *star);
 book_t *rmv_if(book_t *book_list, int id);
 book_t *save(book_t *book_list);
 void save_one_book(FILE *db, book_t *book);

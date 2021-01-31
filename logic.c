@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include<stdbool.h>
+#include <string.h>
+
 
 struct books{
     int index_number;//jeszcze nie wykorzystałem
@@ -23,8 +25,8 @@ int book_index=0; //zamien to za index!!!!!
 book_t *load_data_base();
 void print_db(book_t *f_book);
 void print_db_slot(book_t *f_book);
-book_t *add_b(book_t *book_list);
-void user_add_data(book_t *f_book);
+book_t *add_b(book_t *book_list, char *title, char *author, char *red, char *wis, char *np, char *notes, char *le, char *tag, char *whom, char *star);
+void user_add_data(book_t *f_book,char *title, char *author, char *red, char *wis, char *np, char *notes, char *le, char *tag, char *whom, char *star);
 book_t *rmv_if(book_t *book_list, int id);
 book_t *save(book_t *book_list);
 void save_one_book(FILE *db, book_t *book);
@@ -203,11 +205,12 @@ void print_db_slot(book_t *f_book)
 
 
 
-book_t *add_b(book_t *book_list)
+book_t *add_b(book_t *book_list, char *title, char *author, char *red, char *wis, char *np, char *notes, char *le, char *tag, char *whom, char *star)
 {
         book_t *new_book;
         new_book = (book_t *) malloc(sizeof(book_t));
-        user_add_data(new_book);
+        user_add_data(new_book, title, author, red, wis, np, notes, le, tag, whom, star);
+
         new_book->next=NULL;
         if(book_list==NULL)
             return new_book;
@@ -218,26 +221,17 @@ book_t *add_b(book_t *book_list)
         return f_elem;
 }
 
-void user_add_data(book_t *f_book)
+void user_add_data(book_t *f_book, char *title, char *author, char *red, char *wis, char *np, char *notes, char *le, char *tag, char *whom, char *star)
 {
-    printf("title\n" );
-    scanf("%s", f_book->title);
-    printf("Author \n");
-    scanf("%s", f_book->author);
-    printf("Red:\n");
-    scanf("%d", &f_book->red);
-    printf("where_is: \n");
-    scanf("%s", f_book->where_is);
-    printf("num_pages:\n");
-    scanf("%d", &f_book->num_pages);
-    printf("notes:\n");//na razie tylko jedno słowo zapisujemy trzeba to będzie później zmieniić
-    scanf("%s", f_book->notes);
-    printf("tag:\n");
-    scanf("%s", f_book->tag);
-    printf("lendt:\n");
-    scanf("%d", &f_book->lent);
-    printf("whom_l:\n");
-    scanf("%s", f_book->whom_l);
+    strcpy(f_book->title,title);
+    strcpy(f_book->author, author);  
+    f_book->red=1;  
+   strcpy(f_book->where_is, wis);   
+    f_book->num_pages=1; 
+    strcpy(f_book->notes, notes);   
+    strcpy(f_book->tag, tag);   
+    f_book->lent=1;  
+    strcpy(f_book->whom_l, whom);
     f_book->index_number=index;
     f_book->next=NULL;
     index++;
@@ -332,7 +326,7 @@ book_t *return_book_struct(char *title, book_t *first_book)
         return NULL;
     while(first_book!=NULL)
     {
-        if(strcmp(title, first_book->title))
+        if(strcmp(title, first_book->title)==0)
             return first_book;
         first_book=first_book->next;
     }

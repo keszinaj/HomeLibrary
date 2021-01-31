@@ -8,3 +8,8 @@ pododawaj kometarze
 posprawdzaj komentarze
 może warto dodać to do jednej funkcji aby nie powtarzać kodu wyswietlnia książki
 (np. funkcja przyjmuje window)
+dodaj w formularzu tag
+
+nie diziała wyswietlanie pojedyńcczych książek
+trzeba to niestety clear całe a potem wrzcać chyba
+albo book nie w tytule

@@ -153,7 +153,7 @@ static char* trim_whitespaces(char *str)
 	return str;
 }
 
-void lcatch(int ch, FORM *form, FIELD *fields[17])
+void lcatch(int ch, FORM *form, FIELD *fields[19])
 {
 	int i;
 
@@ -162,9 +162,21 @@ void lcatch(int ch, FORM *form, FIELD *fields[17])
 			// Or the current field buffer won't be sync with what is displayed
 			form_driver(form, REQ_NEXT_FIELD);
 			form_driver(form, REQ_PREV_FIELD);
+			printw("Added");
+			add_b(general_first_book, trim_whitespaces(field_buffer(fields[1], 0)),
+			trim_whitespaces(field_buffer(fields[3], 0)),
+			trim_whitespaces(field_buffer(fields[5], 0)),
+			trim_whitespaces(field_buffer(fields[11], 0)),
+			trim_whitespaces(field_buffer(fields[7], 0)),
+			trim_whitespaces(field_buffer(fields[13], 0)),
+			trim_whitespaces(field_buffer(fields[15], 0)),
+			trim_whitespaces(field_buffer(fields[15], 0)),
+			trim_whitespaces(field_buffer(fields[17], 0)),
+			trim_whitespaces(field_buffer(fields[9], 0)));
+			//must add tag
 			move(LINES-3, 2);
 
-			for (i = 0; fields[i]; i++) {
+			for (i = 0; i<4; i++){
 				printw("%s", printw("%s", trim_whitespaces(field_buffer(fields[i], 0))));
 
 				if (field_opts(fields[i]) & O_ACTIVE)
@@ -218,17 +230,17 @@ void display_add_book()
 	clear();
 	curs_set(1);
 	keypad(stdscr, true);
-	FIELD *fields[17];
+	FIELD *fields[19];
 	FORM *myForm;
 	int pom_pos=2;
-	for(int i=0;i<16;i++)
+	for(int i=0;i<18;i++)
 	{
 		fields[i]=new_field(1,20,pom_pos,2,0,0);
 		i++;
 		fields[i]=new_field(1,50,pom_pos,17,0,0);
 		pom_pos+=2;
 	}
-	fields[16]=NULL;//as docs say
+	fields[18]=NULL;//as docs say
 
 	set_field_buffer(fields[0],0, "Title:");
 	set_field_buffer(fields[2],0, "Author:");
@@ -238,13 +250,14 @@ void display_add_book()
 	set_field_buffer(fields[10],0, "Where is:");
 	set_field_buffer(fields[12],0, "Notes:");
 	set_field_buffer(fields[14],0, "Landed[yes/no]:");
+	set_field_buffer(fields[16],0, "Whom:");
 	//set_field_buffer(fields[16],0, "Landed[yes/no]:");
 
-	for(int i=1;i<16;i=i+2)
+	for(int i=1;i<18;i=i+2)
 	{
 		set_field_back(fields[i], A_UNDERLINE);
 	}
-	for(int i=0;i<16;i++)
+	for(int i=0;i<18;i++)
 	{
 		set_field_opts(fields[i], O_VISIBLE | O_PUBLIC | O_AUTOSKIP);
 		i++;
@@ -262,7 +275,7 @@ void display_add_book()
 	getch();
 	unpost_form(myForm);
 	free_form(myForm);
-	for(int i=0;i<17;i++)
+	for(int i=0;i<19;i++)
 	{
 		free_field(fields[i]);
 	}
@@ -357,12 +370,14 @@ void display_books(book_t *first_book)
 				display_single_book(temp, f_book);
 				clrtoeol();
 				pos_menu_cursor(books_menu);
-				
+				getch();
+			//	clear();
 
 				refresh();
 			}
 				break;
 		}
+		print_in_middle(my_books_menu, 1, 0, 78, "Your Books");
                 wrefresh(my_books_menu);
 	}	
 
@@ -400,7 +415,7 @@ void print_in_middle(WINDOW *win, int starty, int startx, int width, char *strin
 }
 void display_single_book(char *title, book_t *first_book)
 {
-	clear;
+	//clear;
 	book_t *bookdis=return_book_struct(title, first_book);
 	if(bookdis==NULL)
 		return;
@@ -446,7 +461,8 @@ void display_single_book(char *title, book_t *first_book)
 	wrefresh(bookwin);
 
 
-	//getch();
+	getch();
+	wclear(bookwin);
 	
 }
 
