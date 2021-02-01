@@ -223,15 +223,30 @@ book_t *add_b(book_t *book_list, char *title, char *author, char *red, char *wis
 
 void user_add_data(book_t *f_book, char *title, char *author, char *red, char *wis, char *np, char *notes, char *le, char *tag, char *whom, char *star)
 {
+    int num=-1;
     strcpy(f_book->title,title);
-    strcpy(f_book->author, author);  
-    f_book->red=1;  
-   strcpy(f_book->where_is, wis);   
-    f_book->num_pages=1; 
+    strcpy(f_book->author, author); 
+    if(strcmp("yes\0", red)==0) 
+        f_book->red=1;  
+    else
+        f_book->red=0;  
+   strcpy(f_book->where_is, wis);  
+   num=atoi(np); 
+    f_book->num_pages=num; 
     strcpy(f_book->notes, notes);   
-    strcpy(f_book->tag, tag);   
-    f_book->lent=1;  
-    strcpy(f_book->whom_l, whom);
+    strcpy(f_book->tag, tag); 
+    num=atoi(star);
+     strcpy(f_book->stars, num);
+    if(strcmp("yes\0", le)==0) 
+    {
+        f_book->lent=1;
+        strcpy(f_book->whom_l, whom);
+    }  
+    else
+    {
+        f_book->lent=0; 
+        strcpy(f_book->whom_l, " ");
+    } 
     f_book->index_number=index;
     f_book->next=NULL;
     index++;

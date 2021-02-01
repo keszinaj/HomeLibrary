@@ -32,3 +32,5 @@
 "Znaczy Kapitan","Karol Olgierd Borchardt","1","Polka nad lozkiem","438","5","ulubiona morska opowiesc","pamietnik","0","cos" 
 "aa","aa","1","aa","1","0","aa","aa","1","aa" 
 "aa","aa","1","aa","1","0","aa","aa","1","aa" 
+
+

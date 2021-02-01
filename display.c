@@ -177,9 +177,9 @@ void lcatch(int ch, FORM *form, FIELD *fields[19])
 			trim_whitespaces(field_buffer(fields[11], 0)),
 			trim_whitespaces(field_buffer(fields[7], 0)),
 			trim_whitespaces(field_buffer(fields[13], 0)),
-			trim_whitespaces(field_buffer(fields[15], 0)),
-			trim_whitespaces(field_buffer(fields[15], 0)),
 			trim_whitespaces(field_buffer(fields[17], 0)),
+			trim_whitespaces(field_buffer(fields[15], 0)),
+			trim_whitespaces(field_buffer(fields[19], 0)),
 			trim_whitespaces(field_buffer(fields[9], 0)));
 			//must add tag
 			move(LINES-3, 2);
@@ -238,17 +238,17 @@ void display_add_book()
 	clear();
 	curs_set(1);
 	keypad(stdscr, true);
-	FIELD *fields[19];
+	FIELD *fields[21];
 	FORM *myForm;
 	int pom_pos=2;
-	for(int i=0;i<18;i++)
+	for(int i=0;i<20;i++)
 	{
 		fields[i]=new_field(1,20,pom_pos,2,0,0);
 		i++;
 		fields[i]=new_field(1,50,pom_pos,17,0,0);
 		pom_pos+=2;
 	}
-	fields[18]=NULL;//as docs say
+	fields[20]=NULL;//as docs say
 
 	set_field_buffer(fields[0],0, "Title:");
 	set_field_buffer(fields[2],0, "Author:");
@@ -257,15 +257,15 @@ void display_add_book()
 	set_field_buffer(fields[8],0, "Stars[1-6]:");
 	set_field_buffer(fields[10],0, "Where is:");
 	set_field_buffer(fields[12],0, "Notes:");
-	set_field_buffer(fields[14],0, "Landed[yes/no]:");
-	set_field_buffer(fields[16],0, "Whom:");
-	//set_field_buffer(fields[16],0, "Landed[yes/no]:");
+	set_field_buffer(fields[14],0, "Tag:");
+	set_field_buffer(fields[16],0, "Lent[yes/no]:");
+	set_field_buffer(fields[18],0, "Whom:");
 
-	for(int i=1;i<18;i=i+2)
+	for(int i=1;i<20;i=i+2)
 	{
 		set_field_back(fields[i], A_UNDERLINE);
 	}
-	for(int i=0;i<18;i++)
+	for(int i=0;i<19;i++)
 	{
 		set_field_opts(fields[i], O_VISIBLE | O_PUBLIC | O_AUTOSKIP);
 		i++;
@@ -274,7 +274,7 @@ void display_add_book()
 
 	myForm=new_form(fields);
 	post_form(myForm);
-	mvprintw(20, 30, "f1 to cancl f2 to save");
+	mvprintw(22, 32, "f1 to cancl f2 to save");
 	curs_set(1);
     refresh();
 	int ch;
@@ -283,7 +283,7 @@ void display_add_book()
 	getch();
 	unpost_form(myForm);
 	free_form(myForm);
-	for(int i=0;i<19;i++)
+	for(int i=0;i<21;i++)
 	{
 		free_field(fields[i]);
 	}
@@ -377,9 +377,7 @@ void display_books(book_t *first_book)
 				strcat(temp, item_name(current_item(books_menu)));
 				display_single_book(temp, f_book);
 				clrtoeol();
-				pos_menu_cursor(books_menu);
-				//getch();
-				
+				pos_menu_cursor(books_menu);			
 				redrawwin(my_books_menu);
 				wrefresh(my_books_menu);
 				refresh();
