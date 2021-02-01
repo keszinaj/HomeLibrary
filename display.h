@@ -18,4 +18,6 @@ void print_in_middle(WINDOW *win, int starty, int startx, int width, char *strin
 void display_books(book_t *first_book);
 void display_lent_books(book_t *first_book);
 void display_single_book(char *title, book_t *first_book);
+void display_info_win();
+void dispaly_ssaved_window();
 #endif

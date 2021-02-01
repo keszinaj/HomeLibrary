@@ -16,7 +16,8 @@ void print_in_middle(WINDOW *win, int starty, int startx, int width, char *strin
 void display_books(book_t *first_book);
 void display_lent_books(book_t *first_book);
 void display_single_book(char *title, book_t *first_book);
-
+void display_info_win();
+void dispaly_ssaved_window();
 //chyba trzeba potem zrobić zmienna ogolna first book
 book_t *general_first_book;
 
@@ -120,9 +121,16 @@ int print_menu(book_t *first_book)
 		display_add_book();
 		return 1;
 	}
+	else if(highlight==5)
+	{
+		display_info_win();
+		return 1;
+	}
 	else if(highlight==6)
 	{
 		save(general_first_book);
+		dispaly_ssaved_window();
+		return 1;
 	}
 	else if(highlight==7)
 	{
@@ -370,15 +378,15 @@ void display_books(book_t *first_book)
 				display_single_book(temp, f_book);
 				clrtoeol();
 				pos_menu_cursor(books_menu);
-				getch();
-			//	clear();
-
+				//getch();
+				
+				redrawwin(my_books_menu);
+				wrefresh(my_books_menu);
 				refresh();
 			}
 				break;
 		}
-		print_in_middle(my_books_menu, 1, 0, 78, "Your Books");
-                wrefresh(my_books_menu);
+		           
 	}	
 
 	/* Unpost and free all the memory taken up */
@@ -423,10 +431,8 @@ void display_single_book(char *title, book_t *first_book)
 	bookwin=newwin(20, 78, 1, 1);
 	//print nice window
 	box(bookwin, 0, 0);
-	print_in_middle(bookwin, 1, 0, 78, bookdis->title);
-	mvwaddch(bookwin, 2, 0, ACS_LTEE);
-	mvwhline(bookwin, 2, 1, ACS_HLINE, 76);
-	mvwaddch(bookwin, 2, 78, ACS_RTEE);
+	mvwprintw(bookwin, 1, 2, "Title:");
+	mvwprintw(bookwin, 1, 10, bookdis->title);
 	//display content from struct
 	mvwprintw(bookwin, 3, 2, "Author:");
 	mvwprintw(bookwin, 3, 10, bookdis->author);
@@ -463,7 +469,7 @@ void display_single_book(char *title, book_t *first_book)
 
 	getch();
 	wclear(bookwin);
-	
+	endwin();
 }
 
 
@@ -577,3 +583,33 @@ void display_lent_books(book_t *first_book)
 	endwin();
 }
 
+
+void display_info_win()
+{
+	WINDOW *win;
+	win=newwin(20, 78, 1, 1);
+	//print nice window
+	box(win, 0, 0);
+	print_in_middle(win, 1, 0, 78, "Information about program");
+	mvwaddch(win, 2, 0, ACS_LTEE);
+	mvwhline(win, 2, 1, ACS_HLINE, 76);
+	mvwaddch(win, 2, 78, ACS_RTEE);
+	mvwprintw(win,5, 6, "This program was made by keszianj.");
+	mvprintw(LINES - 2, 0, "Press any key to exit");
+	wrefresh(win);
+	refresh();
+	getch();
+}
+void dispaly_ssaved_window()
+{
+	//WINDOW *win;
+	//win=newwin(20, 58, 10, 10);
+	//box(win, 0, 0);
+
+	mvprintw(LINES/2-2,COLS/2-7, "SAVED CHANGES");
+	//print_in_middle(stdscr, yMax/2, xMax/2, xMax, "Information about program");
+	mvprintw(LINES - 11, COLS/2-11, "Press any key to exit.");
+	//wrefresh(win);
+	refresh();
+	getch();
+}
