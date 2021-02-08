@@ -50,8 +50,8 @@ int print_menu(book_t *first_book)
     box(menuwin, 0, 0);//print box
     box(logowin, 0, 0);
     refresh();
-	mvwprintw(logowin, 1,1, "_    _");
-	mvwprintw(logowin,1, 2 ,"  | |  | | ");
+	//mvwprintw(logowin, 1,1, "_    _");
+	//mvwprintw(logowin,1, 2 ,"  | |  | | ");
 	//wprintw(logowin, "  | |__| | ___  _ __ ___   ___ \n");
 	//wprintw(logowin, "  |  __  |/ _ \\| '_ ` _ \\ / _ \\ \n");
 	//wprintw(logowin, "  | |  | | (_) | | | | | |  __/");
@@ -611,3 +611,17 @@ void dispaly_ssaved_window()
 	refresh();
 	getch();
 }
+/*
+void display_search()
+
+{
+	WINDOW *win;
+	win=newwin(20, 78, 1, 1);
+	//print nice window
+	box(win, 0, 0);
+
+	wrefresh(win);
+	refresh();
+	getch();
+}
+*/

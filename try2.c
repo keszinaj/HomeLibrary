@@ -1,321 +1,160 @@
-#include <stdio.h>
+/*
+ * Simple ncurses form example with fields that actually behaves like fields.
+ *
+ * How to run:
+ *	gcc -Wall -Werror -g -pedantic -o test fields_magic.c -lform -lncurses
+ */
+#include <ncurses.h>
+#include <form.h>
+#include <assert.h>
+#include <string.h>
 #include <stdlib.h>
-#include<stdbool.h>
+#include <ctype.h>
 
-struct books{
-    int index_number;//jeszcze nie wykorzystałem
-    char title[60];
-    char author[60];
-    int red;
-    int num_pages;
-    int stars;
-    char where_is[100];
-    char notes[500];
-    char tag[30];
-    int lended;
-    char whom_l[35];
-    struct books* next;
-    };
-typedef struct books book_t;
+static FORM *form;
+static FIELD *fields[3];
+static WINDOW *win_body, *win_form;
 
-int book_index=0; //zamien to za index!!!!!
+/*
+ * This is useful because ncurses fill fields blanks with spaces.
+ */
+static char* trim_whitespaces(char *str)
+{
+	char *end;
 
-book_t *load_data_base();
-void print_db(book_t *f_book);
-void print_db_slot(book_t *f_book);
-book_t *add_b(book_t *book_list);
-void user_add_data(book_t *f_book);
-book_t *rmv_if(book_t *book_list, int id);
-book_t *save(book_t *book_list);
-void save_one_book(FILE *db, book_t *book);
-int number_of_books(book_t *first_book);
-int number_of_lent_books(book_t *first_book);
-int index=0;
+	// trim leading space
+	while(isspace(*str))
+		str++;
 
+	if(*str == 0) // all spaces?
+		return str;
 
+	// trim trailing space
+	end = str + strnlen(str, 128) - 1;
+
+	while(end > str && isspace(*end))
+		end--;
+
+	// write new null terminator
+	*(end+1) = '\0';
+
+	return str;
+}
+
+static void driver(int ch)
+{
+	int i;
+
+	switch (ch) {
+		case KEY_F(2):
+			// Or the current field buffer won't be sync with what is displayed
+			form_driver(form, REQ_NEXT_FIELD);
+			form_driver(form, REQ_PREV_FIELD);
+			move(LINES-3, 2);
+
+			for (i = 0; fields[i]; i++) {
+
+				printw("%s", trim_whitespaces(field_buffer(fields[i], 0)));
+
+				if (field_opts(fields[i]) & O_ACTIVE)
+					printw("\"\t");
+				else
+					printw(": \"");
+			}
+
+			refresh();
+			pos_form_cursor(form);
+			break;
+
+		case KEY_DOWN:
+			form_driver(form, REQ_NEXT_FIELD);
+			form_driver(form, REQ_END_LINE);
+			break;
+
+		case KEY_UP:
+			form_driver(form, REQ_PREV_FIELD);
+			form_driver(form, REQ_END_LINE);
+			break;
+
+		case KEY_LEFT:
+			form_driver(form, REQ_PREV_CHAR);
+			break;
+
+		case KEY_RIGHT:
+			form_driver(form, REQ_NEXT_CHAR);
+			break;
+
+		// Delete the char before cursor
+		case KEY_BACKSPACE:
+		case 127:
+			form_driver(form, REQ_DEL_PREV);
+			break;
+
+		// Delete the char under the cursor
+		case KEY_DC:
+			form_driver(form, REQ_DEL_CHAR);
+			break;
+
+		default:
+			form_driver(form, ch);
+			break;
+	}
+
+	wrefresh(win_form);
+}
 
 int main()
 {
-    int nimh;
-    printf("Program zarządzajacy ksiazkami\n");
-    printf("Wpisz\n1 - by wypisać baze danych\n2- by dopisać książke do  bazy danych -3 aby usunac ksiazke po id\n-4 by wyjsć z programu\n");
-    int choice;
-    book_t *data_base_list=NULL;
-    data_base_list=load_data_base();
-    nimh=number_of_lent_books(data_base_list);
-    printf("num of book %d\n", nimh);
+	int ch;
 
-    while(true)
-    {
-        printf("wprowadz numer : ");
-        scanf("%d", &choice);
-        switch(choice)
-        {
+	initscr();
+	noecho();
+	cbreak();
+	keypad(stdscr, TRUE);
 
-        case 1:
-            {
-                print_db(data_base_list);
-                break;
-            }
-        case 2:
-            {
-                data_base_list=add_b(data_base_list);
-                break;
-            }
-        case 3:
-            {
-                int b;
-                printf(" podaj ksiązke do usuniecia");
-                scanf("%d", &b);
-                data_base_list=rmv_if(data_base_list, b);
-                break;
-            }
-        case 4:
-            {
-                data_base_list=save(data_base_list);
-                break;
-            }
-        case 5:
-            {
-                return 0;
-            }
+	win_body = newwin(24, 80, 0, 0);
+	assert(win_body != NULL);
+	box(win_body, 0, 0);
+	win_form = derwin(win_body, 20, 78, 3, 1);
+	assert(win_form != NULL);
+	box(win_form, 0, 0);
+	mvwprintw(win_body, 1, 2, "Press F1 to quit and F2 to print fields content");
+	
+	fields[0] = new_field(1, 10, 0, 0, 0, 0);
+	fields[1] = new_field(1, 40, 0, 15, 0, 0);
+	fields[2] = NULL;
+	assert(fields[0] != NULL && fields[1] != NULL);
 
-        }
+	set_field_buffer(fields[0], 0, "Search");
+	set_field_buffer(fields[1], 0, "val1");
+	
 
-    }
-    data_base_list=add_b(data_base_list);
-    return 0;
-}
+	set_field_opts(fields[0], O_VISIBLE | O_PUBLIC | O_AUTOSKIP);
+	set_field_opts(fields[1], O_VISIBLE | O_PUBLIC | O_EDIT | O_ACTIVE);
 
-book_t *load_data_base()
-{
-    FILE *db;
-    db=fopen("./database.txt", "r");
-    if(db==NULL) //error handling
-    {
-        printf("ERROR FILE (1)\n");
-        exit(-1);
-    }
+	set_field_back(fields[1], A_UNDERLINE);
+    set_field_back(fields[0], A_TOP);
 
-    //check if database is empty
-    fseek(db, 0, SEEK_END);
-    if(ftell(db)==0)
-    {
-        printf("Database is empty");
-        return NULL;
-    }
-    fseek(db, 0, SEEK_SET);
+	form = new_form(fields);
+	assert(form != NULL);
+	set_form_win(form, win_form);
+	set_form_sub(form, derwin(win_form, 18, 76, 1, 1));
+	post_form(form);
 
-    book_t *first_book;
-    first_book= (book_t *) malloc(sizeof(book_t));
-    //first_book=NULL;//to dopisałem nie wiem czy to legitne
+	refresh();
+	wrefresh(win_body);
+	wrefresh(win_form);
 
-    char number_string[10];
-    fscanf(db, " \"%[^\"]\",", first_book->title);
-    fscanf(db, " \"%[^\"]\",", first_book->author);
-    fscanf(db, " \"%[^\"]\",", number_string);
-    sscanf(number_string, "%d", &first_book->red);
-    fscanf(db, " \"%[^\"]\",", first_book->where_is);
-    fscanf(db, " \"%[^\"]\",", number_string);
-    sscanf(number_string, "%d", &first_book->num_pages);
-    fscanf(db, " \"%[^\"]\",", number_string);
-    sscanf(number_string, "%d", &first_book->stars);
-    fscanf(db, " \"%[^\"]\",", first_book->notes);
-    fscanf(db, " \"%[^\"]\",", first_book->tag);
-    fscanf(db, " \"%[^\"]\",", number_string);
-    sscanf(number_string, "%d", &first_book->lended);
-    fscanf(db, " \"%[^\"]\" ", first_book->whom_l);
-    first_book->index_number=index;
-    first_book->next=NULL;
-    index++;
+	while ((ch = getch()) != KEY_F(1))
+		driver(ch);
 
+	unpost_form(form);
+	free_form(form);
+	free_field(fields[0]);
+	free_field(fields[1]);
+	delwin(win_form);
+	delwin(win_body);
+	endwin();
 
-    book_t *previous_book=first_book;
-    while(true)
-    {
-        book_t *new_book;
-        new_book= (book_t *) malloc(sizeof(book_t));
-        previous_book->next=new_book;
-        new_book->next=NULL;
-
-        if(fscanf(db, " \"%[^\"]\",", new_book->title)<0)
-        {
-            previous_book->next=NULL;
-            free(new_book);
-            break;
-        }
-        fscanf(db, " \"%[^\"]\",", new_book->author);
-        fscanf(db, " \"%[^\"]\",", number_string);
-        sscanf(number_string, "%d", &new_book->red);
-        fscanf(db, " \"%[^\"]\",", new_book->where_is);
-        fscanf(db, " \"%[^\"]\",", number_string);
-        sscanf(number_string, "%d", &new_book->num_pages);
-        fscanf(db, " \"%[^\"]\",", number_string);
-        sscanf(number_string, "%d", &new_book->stars);
-        fscanf(db, " \"%[^\"]\",", new_book->notes);
-        fscanf(db, " \"%[^\"]\",", new_book->tag);
-        fscanf(db, " \"%[^\"]\",", number_string);
-        sscanf(number_string, "%d", &new_book->lended);
-        fscanf(db, " \"%[^\"]\" ", new_book->whom_l);
-        new_book->index_number=index;
-        index++;
-        previous_book=new_book;
-
-    }
-
-
-    fclose(db);
-    return first_book;
-}
-
-void print_db(book_t *f_book)
-{
-    if(f_book==NULL)
-    {
-        printf("pusto");
-        return;
-    }
-    while(f_book->next!=NULL)
-    {
-        print_db_slot(f_book);
-        f_book=f_book->next;
-    }
-    print_db_slot(f_book);
-}
-void print_db_slot(book_t *f_book)
-{
-    printf("title %s\n", f_book->title);
-    printf("Author %s\n", f_book->author);
-    printf("Red: %d\n", f_book->red);
-    printf("where_is: %s\n", f_book->where_is);
-    printf("num_pages: %d\n", f_book->num_pages);
-    printf("notes: %s\n", f_book->notes);
-    printf("tag: %s\n", f_book->tag);
-    printf("lended: %d\n", f_book->lended);
-    printf("whom_l: %s\n", f_book->whom_l);
-}
-
-
-
-book_t *add_b(book_t *book_list)
-{
-        book_t *new_book;
-        new_book = (book_t *) malloc(sizeof(book_t));
-        user_add_data(new_book);
-        new_book->next=NULL;
-        if(book_list==NULL)
-            return new_book;
-        book_t *f_elem =book_list;
-        while(book_list->next!=NULL)
-            book_list=book_list->next;
-        book_list->next=new_book;
-        return f_elem;
-}
-
-void user_add_data(book_t *f_book)
-{
-    printf("title\n" );
-    scanf("%s", f_book->title);
-    printf("Author \n");
-    scanf("%s", f_book->author);
-    printf("Red:\n");
-    scanf("%d", &f_book->red);
-    printf("where_is: \n");
-    scanf("%s", f_book->where_is);
-    printf("num_pages:\n");
-    scanf("%d", &f_book->num_pages);
-    printf("notes:\n");//na razie tylko jedno słowo zapisujemy trzeba to będzie później zmieniić
-    scanf("%s", f_book->notes);
-    printf("tag:\n");
-    scanf("%s", f_book->tag);
-    printf("lended:\n");
-    scanf("%d", &f_book->lended);
-    printf("whom_l:\n");
-    scanf("%s", f_book->whom_l);
-    f_book->index_number=index;
-    f_book->next=NULL;
-    index++;
-}
-int number_of_lent_books(book_t *first_book)
-{
-    int n=0;
-    while(first_book!=NULL)
-    {
-        if(first_book->lended==1)
-        {
-            n++;
-        }
-        first_book=first_book->next;
-    }
-    return n;
-}
-book_t *rmv_if(book_t *book_list, int id)
-{
-    if(book_list==NULL)
-    {
-        printf("lista jest pusta");
-        return NULL;
-    }
-    book_t *f_book =book_list;
-    if(book_list->index_number==id)
-    {
-        f_book=book_list->next;
-        free(book_list);
-        return f_book;
-    }
-    book_t *previous;
-    while(book_list->next!=NULL)
-    {
-        previous=book_list;
-        book_list=book_list->next;
-        if(book_list->index_number==id)
-        {
-            previous->next=book_list->next;
-            free(book_list);
-            return f_book;
-        }
-    }
-    return f_book;
-}
-
-book_t *save(book_t *book_list)
-{
-    FILE *db;
-    book_t *f_book =book_list;
-    db=fopen("database.txt", "w+");
-    if(db==NULL) //error handling
-    {
-        printf("ERROR FILE (1)\n");
-        exit(-1);
-    }
-    if(book_list==NULL)
-    {
-        fputs( "\n", db );
-    }
-    else{
-        while(book_list!=NULL)
-        {
-            save_one_book(db, book_list);
-            book_list=book_list->next;
-        }
-    }
-   // fputs( "Ten tekst zostanie dopisany do podanego pliku.\n", db );
-    fclose( db);
-    return f_book;
-}
-void save_one_book(FILE *db, book_t *book)
-{
-    fprintf(db, "\"%s\",\"%s\",\"%d\",\"%s\",\"%d\",\"%d\",\"%s\",\"%s\",\"%d\",\"%s\" \n", book->title, book->author, book->red, book->where_is, book->num_pages, book->stars, book->notes, book->tag, book->lended, book->whom_l);
-}
-
-
-int number_of_books(book_t *first_book)
-{
-    int n=0;
-    while(first_book!=NULL)
-    {
-        n++;
-        first_book=first_book->next;
-    }
-    return n;
+	return 0;
 }
