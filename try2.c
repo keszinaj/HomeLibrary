@@ -11,9 +11,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-static FORM *form;
-static FIELD *fields[3];
-static WINDOW *win_body, *win_form;
+
 
 /*
  * This is useful because ncurses fill fields blanks with spaces.
@@ -41,12 +39,12 @@ static char* trim_whitespaces(char *str)
 	return str;
 }
 
-static void driver(int ch)
+static void search_input(int ch, FORM *form, FIELD *fields[3])
 {
 	int i;
 
 	switch (ch) {
-		case KEY_F(2):
+		case 10:
 			// Or the current field buffer won't be sync with what is displayed
 			form_driver(form, REQ_NEXT_FIELD);
 			form_driver(form, REQ_PREV_FIELD);
@@ -64,25 +62,7 @@ static void driver(int ch)
 
 			refresh();
 			pos_form_cursor(form);
-			break;
-
-		case KEY_DOWN:
-			form_driver(form, REQ_NEXT_FIELD);
-			form_driver(form, REQ_END_LINE);
-			break;
-
-		case KEY_UP:
-			form_driver(form, REQ_PREV_FIELD);
-			form_driver(form, REQ_END_LINE);
-			break;
-
-		case KEY_LEFT:
-			form_driver(form, REQ_PREV_CHAR);
-			break;
-
-		case KEY_RIGHT:
-			form_driver(form, REQ_NEXT_CHAR);
-			break;
+			return;
 
 		// Delete the char before cursor
 		case KEY_BACKSPACE:
@@ -99,12 +79,13 @@ static void driver(int ch)
 			form_driver(form, ch);
 			break;
 	}
-
-	wrefresh(win_form);
 }
 
-int main()
+void search_pop_up()
 {
+	 FORM *form;
+ FIELD *fields[3];
+ WINDOW *win_body, *win_form;
 	int ch;
 
 	initscr();
@@ -112,21 +93,21 @@ int main()
 	cbreak();
 	keypad(stdscr, TRUE);
 
-	win_body = newwin(24, 80, 0, 0);
+	win_body = newwin(12, 50, 5, 5);
 	assert(win_body != NULL);
 	box(win_body, 0, 0);
-	win_form = derwin(win_body, 20, 78, 3, 1);
+	win_form = derwin(win_body, 6, 48, 2, 1);
 	assert(win_form != NULL);
 	box(win_form, 0, 0);
-	mvwprintw(win_body, 1, 2, "Press F1 to quit and F2 to print fields content");
+	mvwprintw(win_body, 9, 2, "Press Enter to search");
 	
 	fields[0] = new_field(1, 10, 0, 0, 0, 0);
-	fields[1] = new_field(1, 40, 0, 15, 0, 0);
+	fields[1] = new_field(1, 30, 0, 10, 0, 0);
 	fields[2] = NULL;
 	assert(fields[0] != NULL && fields[1] != NULL);
 
-	set_field_buffer(fields[0], 0, "Search");
-	set_field_buffer(fields[1], 0, "val1");
+	set_field_buffer(fields[0], 0, "Search:");
+	
 	
 
 	set_field_opts(fields[0], O_VISIBLE | O_PUBLIC | O_AUTOSKIP);
@@ -138,7 +119,7 @@ int main()
 	form = new_form(fields);
 	assert(form != NULL);
 	set_form_win(form, win_form);
-	set_form_sub(form, derwin(win_form, 18, 76, 1, 1));
+	set_form_sub(form, derwin(win_form, 3, 40, 2, 4));
 	post_form(form);
 
 	refresh();
@@ -146,8 +127,10 @@ int main()
 	wrefresh(win_form);
 
 	while ((ch = getch()) != KEY_F(1))
-		driver(ch);
-
+	{
+		search_input(ch, form, fields);
+		wrefresh(win_form);
+	}
 	unpost_form(form);
 	free_form(form);
 	free_field(fields[0]);
@@ -156,5 +139,10 @@ int main()
 	delwin(win_body);
 	endwin();
 
+}
+
+int main()
+{
+	search_pop_up();
 	return 0;
 }

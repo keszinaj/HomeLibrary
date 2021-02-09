@@ -22,17 +22,6 @@ typedef struct books book_t;
 
 int book_index=0; //zamien to za index!!!!!
 
-book_t *load_data_base();
-void print_db(book_t *f_book);
-void print_db_slot(book_t *f_book);
-book_t *add_b(book_t *book_list, char *title, char *author, char *red, char *wis, char *np, char *notes, char *le, char *tag, char *whom, char *star);
-void user_add_data(book_t *f_book,char *title, char *author, char *red, char *wis, char *np, char *notes, char *le, char *tag, char *whom, char *star);
-book_t *rmv_if(book_t *book_list, int id);
-book_t *save(book_t *book_list);
-void save_one_book(FILE *db, book_t *book);
-int number_of_books(book_t *first_book);
-int number_of_lent_books(book_t *first_book);
-book_t *return_book_struct(char *title, book_t *first_book);
 int index=0;
 /**
 to do:
@@ -175,7 +164,18 @@ book_t *load_data_base()
     fclose(db);
     return first_book;
 }
-
+void print_db_slot(book_t *f_book)
+{
+    printf("title %s\n", f_book->title);
+    printf("Author %s\n", f_book->author);
+    printf("Red: %d\n", f_book->red);
+    printf("where_is: %s\n", f_book->where_is);
+    printf("num_pages: %d\n", f_book->num_pages);
+    printf("notes: %s\n", f_book->notes);
+    printf("tag: %s\n", f_book->tag);
+    printf("lent: %d\n", f_book->lent);
+    printf("whom_l: %s\n", f_book->whom_l);
+}
 void print_db(book_t *f_book)
 {
     if(f_book==NULL)
@@ -190,36 +190,8 @@ void print_db(book_t *f_book)
     }
     print_db_slot(f_book);
 }
-void print_db_slot(book_t *f_book)
-{
-    printf("title %s\n", f_book->title);
-    printf("Author %s\n", f_book->author);
-    printf("Red: %d\n", f_book->red);
-    printf("where_is: %s\n", f_book->where_is);
-    printf("num_pages: %d\n", f_book->num_pages);
-    printf("notes: %s\n", f_book->notes);
-    printf("tag: %s\n", f_book->tag);
-    printf("lent: %d\n", f_book->lent);
-    printf("whom_l: %s\n", f_book->whom_l);
-}
 
 
-
-book_t *add_b(book_t *book_list, char *title, char *author, char *red, char *wis, char *np, char *notes, char *le, char *tag, char *whom, char *star)
-{
-        book_t *new_book;
-        new_book = (book_t *) malloc(sizeof(book_t));
-        user_add_data(new_book, title, author, red, wis, np, notes, le, tag, whom, star);
-
-        new_book->next=NULL;
-        if(book_list==NULL)
-            return new_book;
-        book_t *f_elem =book_list;
-        while(book_list->next!=NULL)
-            book_list=book_list->next;
-        book_list->next=new_book;
-        return f_elem;
-}
 
 void user_add_data(book_t *f_book, char *title, char *author, char *red, char *wis, char *np, char *notes, char *le, char *tag, char *whom, char *star)
 {
@@ -236,7 +208,7 @@ void user_add_data(book_t *f_book, char *title, char *author, char *red, char *w
     strcpy(f_book->notes, notes);   
     strcpy(f_book->tag, tag); 
     num=atoi(star);
-     strcpy(f_book->stars, num);
+     f_book->stars=num;
     if(strcmp("yes\0", le)==0) 
     {
         f_book->lent=1;
@@ -251,6 +223,22 @@ void user_add_data(book_t *f_book, char *title, char *author, char *red, char *w
     f_book->next=NULL;
     index++;
 }
+book_t *add_b(book_t *book_list, char *title, char *author, char *red, char *wis, char *np, char *notes, char *le, char *tag, char *whom, char *star)
+{
+        book_t *new_book;
+        new_book = (book_t *) malloc(sizeof(book_t));
+        user_add_data(new_book, title, author, red, wis, np, notes, le, tag, whom, star);
+
+        new_book->next=NULL;
+        if(book_list==NULL)
+            return new_book;
+        book_t *f_elem =book_list;
+        while(book_list->next!=NULL)
+            book_list=book_list->next;
+        book_list->next=new_book;
+        return f_elem;
+}
+
 
 book_t *rmv_if(book_t *book_list, int id)
 {
@@ -280,7 +268,10 @@ book_t *rmv_if(book_t *book_list, int id)
     }
     return f_book;
 }
-
+void save_one_book(FILE *db, book_t *book)
+{
+    fprintf(db, "\"%s\",\"%s\",\"%d\",\"%s\",\"%d\",\"%d\",\"%s\",\"%s\",\"%d\",\"%s\" \n", book->title, book->author, book->red, book->where_is, book->num_pages, book->stars, book->notes, book->tag, book->lent, book->whom_l);
+}
 book_t *save(book_t *book_list)
 {
     FILE *db;
@@ -306,10 +297,7 @@ book_t *save(book_t *book_list)
     fclose( db);
     return f_book;
 }
-void save_one_book(FILE *db, book_t *book)
-{
-    fprintf(db, "\"%s\",\"%s\",\"%d\",\"%s\",\"%d\",\"%d\",\"%s\",\"%s\",\"%d\",\"%s\" \n", book->title, book->author, book->red, book->where_is, book->num_pages, book->stars, book->notes, book->tag, book->lent, book->whom_l);
-}
+
 
 
 int number_of_books(book_t *first_book)

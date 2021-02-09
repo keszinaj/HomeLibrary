@@ -6,18 +6,17 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include "logic.h"
+#include "info_win.h"
+#include "ncurses_my_fun.h"
+#include "win_add_book.h"
 
 int print_menu(book_t *first_book);
-void display_add_book();
-void lcatch(int ch, FORM *form, FIELD *fields[17]);
-static char* trim_whitespaces(char *str);
 void init_scr(book_t *first_book);
-void print_in_middle(WINDOW *win, int starty, int startx, int width, char *string);
 void display_books(book_t *first_book);
 void display_lent_books(book_t *first_book);
 void display_single_book(char *title, book_t *first_book);
-void display_info_win();
-void dispaly_ssaved_window();
+void search_pop_up();
+static void search_input(int ch, FORM *form, FIELD *fields[3]);
 //chyba trzeba potem zrobić zmienna ogolna first book
 book_t *general_first_book;
 
@@ -116,6 +115,11 @@ int print_menu(book_t *first_book)
 		display_lent_books(first_book);
 		return 1;
 	}
+	else if(highlight==3)
+	{
+		search_pop_up();
+		return 1;
+	}
 	else if(highlight==4)
 	{
 		display_add_book();
@@ -138,159 +142,9 @@ int print_menu(book_t *first_book)
 	}
     printw("your choice was %s", choices[highlight]);
 }
-static char* trim_whitespaces(char *str)
-{
-	char *end;
 
-	// trim leading space
-	while(isspace(*str))
-		str++;
 
-	if(*str == 0) // all spaces?
-		return str;
 
-	// trim trailing space
-	end = str + strnlen(str, 128) - 1;
-
-	while(end > str && isspace(*end))
-		end--;
-
-	// write new null terminator
-	*(end+1) = '\0'; //is it good idea???
-
-	return str;
-}
-
-void lcatch(int ch, FORM *form, FIELD *fields[19])
-{
-	int i;
-
-	switch (ch) {
-		case KEY_F(2):
-			// Or the current field buffer won't be sync with what is displayed
-			form_driver(form, REQ_NEXT_FIELD);
-			form_driver(form, REQ_PREV_FIELD);
-			printw("Added");
-			add_b(general_first_book, trim_whitespaces(field_buffer(fields[1], 0)),
-			trim_whitespaces(field_buffer(fields[3], 0)),
-			trim_whitespaces(field_buffer(fields[5], 0)),
-			trim_whitespaces(field_buffer(fields[11], 0)),
-			trim_whitespaces(field_buffer(fields[7], 0)),
-			trim_whitespaces(field_buffer(fields[13], 0)),
-			trim_whitespaces(field_buffer(fields[17], 0)),
-			trim_whitespaces(field_buffer(fields[15], 0)),
-			trim_whitespaces(field_buffer(fields[19], 0)),
-			trim_whitespaces(field_buffer(fields[9], 0)));
-			//must add tag
-			move(LINES-3, 2);
-
-			for (i = 0; i<4; i++){
-				printw("%s", printw("%s", trim_whitespaces(field_buffer(fields[i], 0))));
-
-				if (field_opts(fields[i]) & O_ACTIVE)
-					printw("\"\t");
-				else
-					printw(": \"");
-			}
-
-			refresh();
-			pos_form_cursor(form);
-			break;
-
-		case KEY_DOWN:
-			form_driver(form, REQ_NEXT_FIELD);
-			form_driver(form, REQ_END_LINE);
-			break;
-
-		case KEY_UP:
-			form_driver(form, REQ_PREV_FIELD);
-			form_driver(form, REQ_END_LINE);
-			break;
-
-		case KEY_LEFT:
-			form_driver(form, REQ_PREV_CHAR);
-			break;
-
-		case KEY_RIGHT:
-			form_driver(form, REQ_NEXT_CHAR);
-			break;
-
-		// Delete the char before cursor
-		case KEY_BACKSPACE:
-		case 127:
-			form_driver(form, REQ_DEL_PREV);
-			break;
-
-		// Delete the char under the cursor
-		case KEY_DC:
-			form_driver(form, REQ_DEL_CHAR);
-			break;
-
-		default:
-			form_driver(form, ch);
-			break;
-	}
-
-	refresh();
-}
-void display_add_book()
-{
-	clear();
-	curs_set(1);
-	keypad(stdscr, true);
-	FIELD *fields[21];
-	FORM *myForm;
-	int pom_pos=2;
-	for(int i=0;i<20;i++)
-	{
-		fields[i]=new_field(1,20,pom_pos,2,0,0);
-		i++;
-		fields[i]=new_field(1,50,pom_pos,17,0,0);
-		pom_pos+=2;
-	}
-	fields[20]=NULL;//as docs say
-
-	set_field_buffer(fields[0],0, "Title:");
-	set_field_buffer(fields[2],0, "Author:");
-	set_field_buffer(fields[4],0, "Red [yes/no]:");
-	set_field_buffer(fields[6],0, "Pages:");
-	set_field_buffer(fields[8],0, "Stars[1-6]:");
-	set_field_buffer(fields[10],0, "Where is:");
-	set_field_buffer(fields[12],0, "Notes:");
-	set_field_buffer(fields[14],0, "Tag:");
-	set_field_buffer(fields[16],0, "Lent[yes/no]:");
-	set_field_buffer(fields[18],0, "Whom:");
-
-	for(int i=1;i<20;i=i+2)
-	{
-		set_field_back(fields[i], A_UNDERLINE);
-	}
-	for(int i=0;i<19;i++)
-	{
-		set_field_opts(fields[i], O_VISIBLE | O_PUBLIC | O_AUTOSKIP);
-		i++;
-		set_field_opts(fields[i], O_VISIBLE | O_PUBLIC | O_EDIT | O_ACTIVE);
-	}
-
-	myForm=new_form(fields);
-	post_form(myForm);
-	mvprintw(22, 32, "f1 to cancl f2 to save");
-	curs_set(1);
-    refresh();
-	int ch;
-	while((ch=getch())!= KEY_F(1))
-		lcatch(ch, myForm, fields);
-	getch();
-	unpost_form(myForm);
-	free_form(myForm);
-	for(int i=0;i<21;i++)
-	{
-		free_field(fields[i]);
-	}
-	clear();
-	return;
-
-}
 
 
 
@@ -394,84 +248,6 @@ void display_books(book_t *first_book)
                 free_item(books[i]);
 	endwin();
 }
-
-void print_in_middle(WINDOW *win, int starty, int startx, int width, char *string)
-{	int length, x, y;
-	float temp;
-
-	if(win == NULL)
-		win = stdscr;
-	getyx(win, y, x);
-	if(startx != 0)
-		x = startx;
-	if(starty != 0)
-		y = starty;
-	if(width == 0)
-		width = 80;
-
-	length = strlen(string);
-	temp = (width - length)/ 2;
-	x = startx + (int)temp;
-	//watrron
-	mvwprintw(win, y, x, "%s", string);
-	//watroff
-	refresh();
-
-	
-}
-void display_single_book(char *title, book_t *first_book)
-{
-	//clear;
-	book_t *bookdis=return_book_struct(title, first_book);
-	if(bookdis==NULL)
-		return;
-	WINDOW *bookwin;
-	bookwin=newwin(20, 78, 1, 1);
-	//print nice window
-	box(bookwin, 0, 0);
-	mvwprintw(bookwin, 1, 2, "Title:");
-	mvwprintw(bookwin, 1, 10, bookdis->title);
-	//display content from struct
-	mvwprintw(bookwin, 3, 2, "Author:");
-	mvwprintw(bookwin, 3, 10, bookdis->author);
-	mvwprintw(bookwin, 5, 2, "Number of pages:");
-	char stringol[15];
-	snprintf(stringol, 15, "%d", bookdis->num_pages);//change int to string
-	mvwprintw(bookwin, 5, 20, stringol);
-	mvwprintw(bookwin, 7, 2, "Where is:");
-	mvwprintw(bookwin, 7, 11, bookdis->where_is);
-	mvwprintw(bookwin, 9, 2, "tag:");
-	mvwprintw(bookwin, 9, 7, bookdis->tag);
-	mvwprintw(bookwin, 11, 2, "stars:");
-	snprintf(stringol, 15, "%d", bookdis->stars);
-	mvwprintw(bookwin, 11, 9, stringol);
-	mvwprintw(bookwin, 13, 2, "red:");
-	if(bookdis->red==1)
-		mvwprintw(bookwin, 13, 7, "Yes");
-	else
-		mvwprintw(bookwin, 13, 7, "No");
-	int yn=15;
-	if(bookdis->lent==1)
-	{
-		mvwprintw(bookwin, yn, 2, "who lent:");
-		mvwprintw(bookwin, yn, 12, bookdis->whom_l);
-		yn=17;
-	}
-	mvwprintw(bookwin, yn, 2, "notes:");
-	mvwprintw(bookwin, yn, 10, bookdis->notes);
-
-
-	refresh();
-	wrefresh(bookwin);
-
-
-	getch();
-	wclear(bookwin);
-	endwin();
-}
-
-
-
 
 
 void display_lent_books(book_t *first_book)
@@ -581,47 +357,104 @@ void display_lent_books(book_t *first_book)
 	endwin();
 }
 
-
-void display_info_win()
+static void search_input(int ch, FORM *form, FIELD *fields[3])
 {
-	WINDOW *win;
-	win=newwin(20, 78, 1, 1);
-	//print nice window
-	box(win, 0, 0);
-	print_in_middle(win, 1, 0, 78, "Information about program");
-	mvwaddch(win, 2, 0, ACS_LTEE);
-	mvwhline(win, 2, 1, ACS_HLINE, 76);
-	mvwaddch(win, 2, 78, ACS_RTEE);
-	mvwprintw(win,5, 6, "This program was made by keszianj.");
-	mvprintw(LINES - 2, 0, "Press any key to exit");
-	wrefresh(win);
-	refresh();
-	getch();
+	int i;
+
+	switch (ch) {
+		case 10:
+			// Or the current field buffer won't be sync with what is displayed
+			form_driver(form, REQ_NEXT_FIELD);
+			form_driver(form, REQ_PREV_FIELD);
+			move(LINES-3, 2);
+
+			for (i = 0; fields[i]; i++) {
+
+				printw("%s", trim_whitespaces(field_buffer(fields[i], 0)));
+
+				if (field_opts(fields[i]) & O_ACTIVE)
+					printw("\"\t");
+				else
+					printw(": \"");
+			}
+
+			refresh();
+			pos_form_cursor(form);
+			break;
+		case KEY_LEFT:
+			form_driver(form, REQ_PREV_CHAR);
+			break;
+
+		case KEY_RIGHT:
+			form_driver(form, REQ_NEXT_CHAR);
+			break;
+		// Delete the char before cursor
+		case KEY_BACKSPACE:
+		case 127:
+			form_driver(form, REQ_DEL_PREV);
+			break;
+
+		// Delete the char under the cursor
+		case KEY_DC:
+			form_driver(form, REQ_DEL_CHAR);
+			break;
+
+		default:
+			form_driver(form, ch);
+			break;
+	}
 }
-void dispaly_ssaved_window()
+
+void search_pop_up()
 {
-	//WINDOW *win;
-	//win=newwin(20, 58, 10, 10);
-	//box(win, 0, 0);
+	 FORM *form;
+ FIELD *fields[3];
+ WINDOW *win_body, *win_form;
+	int ch;
+	win_body = newwin(12, 50, 5, 5);
+	assert(win_body != NULL);
+	box(win_body, 0, 0);
+	win_form = derwin(win_body, 6, 48, 2, 1);
+	assert(win_form != NULL);
+	box(win_form, 0, 0);
+	mvwprintw(win_body, 9, 2, "Press Enter to search F1 to exit");
+	
+	fields[0] = new_field(1, 10, 0, 0, 0, 0);
+	fields[1] = new_field(1, 30, 0, 10, 0, 0);
+	fields[2] = NULL;
+	assert(fields[0] != NULL && fields[1] != NULL);
 
-	mvprintw(LINES/2-2,COLS/2-7, "SAVED CHANGES");
-	//print_in_middle(stdscr, yMax/2, xMax/2, xMax, "Information about program");
-	mvprintw(LINES - 11, COLS/2-11, "Press any key to exit.");
-	//wrefresh(win);
+	set_field_buffer(fields[0], 0, "Search:");
+	
+	
+
+	set_field_opts(fields[0], O_VISIBLE | O_PUBLIC | O_AUTOSKIP);
+	set_field_opts(fields[1], O_VISIBLE | O_PUBLIC | O_EDIT | O_ACTIVE);
+
+	set_field_back(fields[1], A_UNDERLINE);
+    set_field_back(fields[0], A_TOP);
+
+	form = new_form(fields);
+	assert(form != NULL);
+	set_form_win(form, win_form);
+	set_form_sub(form, derwin(win_form, 3, 40, 2, 4));
+	post_form(form);
+	curs_set(1);
+	pos_form_cursor(form);
 	refresh();
-	getch();
-}
-/*
-void display_search()
+	wrefresh(win_body);
+	wrefresh(win_form);
 
-{
-	WINDOW *win;
-	win=newwin(20, 78, 1, 1);
-	//print nice window
-	box(win, 0, 0);
+	while ((ch = getch()) != KEY_F(1))
+	{
+		search_input(ch, form, fields);
+		wrefresh(win_form);
+	}
+	unpost_form(form);
+	free_form(form);
+	free_field(fields[0]);
+	free_field(fields[1]);
+	delwin(win_form);
+	delwin(win_body);
 
-	wrefresh(win);
-	refresh();
-	getch();
 }
-*/
