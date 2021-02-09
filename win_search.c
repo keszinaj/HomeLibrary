@@ -25,6 +25,7 @@ static void search_input(int ch, FORM *form, FIELD *fields[3])
 
 			refresh();
 			pos_form_cursor(form);
+            ch=KEY_F(1);
 			break;
 		case KEY_LEFT:
 			form_driver(form, REQ_PREV_CHAR);
