@@ -49,11 +49,33 @@ int print_menu(book_t *first_book)
     box(menuwin, 0, 0);//print box
     box(logowin, 0, 0);
     refresh();
-	//mvwprintw(logowin, 1,1, "_    _");
-	//mvwprintw(logowin,1, 2 ,"  | |  | | ");
-	//wprintw(logowin, "  | |__| | ___  _ __ ___   ___ \n");
-	//wprintw(logowin, "  |  __  |/ _ \\| '_ ` _ \\ / _ \\ \n");
-	//wprintw(logowin, "  | |  | | (_) | | | | | |  __/");
+	int pos=4;
+	 FILE* fp;
+    fp = fopen("./logoasci.txt", "r");
+    if (fp == NULL) {
+      perror("Failed: ");
+      return 1;
+    }
+
+    char buffer[256];
+    // -1 to allow room for NULL terminator for really long string
+    while (fgets(buffer, 255, fp))
+    {
+        // Remove trailing newline
+        buffer[strcspn(buffer, "\n")] = 0;
+		mvwprintw(logowin, pos,7, buffer);
+		pos++;
+    }
+
+    fclose(fp);
+	
+	mvwprintw(logowin, 1,5, "You have %d books.", number_of_books(general_first_book));
+	mvwprintw(logowin, 2,5, "You lent %d books.", number_of_lent_books(general_first_book));
+	//mvwprintw(logowin, 3,1, "_    _");
+	//mvwprintw(logowin,4, 1 ,"  | |  | | ");
+	//mvwprintw(logowin,5,1 ,"  | |__| | ___  _ __ ___   ___ ");
+	//mvwprintw(logowin,6,1 ,"  |  __  |/ _ \\| '_ ` _ \\ / _ \\ ");
+	//mvwprintw(logowin,7,1, "  | |  | | (_) | | | | | |  __/");
     wrefresh(menuwin);
     wrefresh(logowin);
 
