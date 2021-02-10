@@ -236,6 +236,16 @@ void display_books(book_t *first_book)
 				refresh();
 			}
 				break;
+			case KEY_BACKSPACE:
+			{
+				char str[60];
+				str[0]='\0';
+				strcat(str, item_name(current_item(books_menu)));
+				general_first_book=rmv_if(general_first_book, str);
+				clear();
+				dispaly_delated_window();
+			}
+			return;
 		}
 		           
 	}	

@@ -81,3 +81,10 @@ void dispaly_ssaved_window()
 	refresh();
 	getch();
 }
+void dispaly_delated_window()
+{
+	mvprintw(LINES/2-2,COLS/2-5, "DELETED");
+	mvprintw(LINES - 11, COLS/2-11, "Press any key to exit.");
+	refresh();
+	getch();
+}

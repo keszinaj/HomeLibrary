@@ -240,7 +240,7 @@ book_t *add_b(book_t *book_list, char *title, char *author, char *red, char *wis
 }
 
 
-book_t *rmv_if(book_t *book_list, int id)
+book_t *rmv_if(book_t *book_list, char *str)
 {
     if(book_list==NULL)
     {
@@ -248,7 +248,7 @@ book_t *rmv_if(book_t *book_list, int id)
         return NULL;
     }
     book_t *f_book =book_list;
-    if(book_list->index_number==id)
+    if(strcmp(f_book->title, str)==0)
     {
         f_book=book_list->next;
         free(book_list);
@@ -259,7 +259,7 @@ book_t *rmv_if(book_t *book_list, int id)
     {
         previous=book_list;
         book_list=book_list->next;
-        if(book_list->index_number==id)
+        if(strcmp(book_list->title, str)==0)
         {
             previous->next=book_list->next;
             free(book_list);
