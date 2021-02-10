@@ -335,6 +335,20 @@ book_t *return_book_struct(char *title, book_t *first_book)
     }
     return NULL;
 }
+
+int number_of_found_books(book_t *first_book, char *str)
+{
+    int n=0;
+    while(first_book!=NULL)
+    {
+        if(strstr(first_book->title, str) != NULL)
+        {
+            n++;
+        }
+        first_book=first_book->next;
+    }
+    return n;
+}
 /**
 "Bardzo potrzebna mi jest przyjazn Pana","Zbigniew Herbert","2","Polka nad lozkiem","182","4","listy","listy","0","cos"
 "Folwark zwierzęcy ","George Orwell","7","Szafa w salonie","128","5","moje notatki","klasyka","1","Slawek"

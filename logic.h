@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include<stdbool.h>
 #include <string.h>
-
 struct books{
     int index_number;//jeszcze nie wykorzystałem
     char title[60];
@@ -33,4 +32,5 @@ void save_one_book(FILE *db, book_t *book);
 int number_of_books(book_t *first_book);
 int number_of_lent_books(book_t *first_book);
 book_t *return_book_struct(char *title, book_t *first_book);
+int number_of_found_books(book_t *first_book, char *str);
 #endif

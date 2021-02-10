@@ -1,10 +1,123 @@
 #include <ncurses.h>
 #include<form.h>
 #include <assert.h>
+#include<menu.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
 #include "ncurses_my_fun.h"
-static void search_input(int ch, FORM *form, FIELD *fields[3])
+#include "logic.h"
+#include "display.h"
+#include "ncurses_my_fun.h"
+void display_found(char *str)
 {
-	int i;
+    
+	//val
+    book_t *first_book=general_first_book;
+	ITEM **books;
+	MENU *books_menu;
+	int n_books, i, c;
+	WINDOW *my_books_menu;
+	//here in future will be colors edc
+
+	//initialize item
+	n_books=number_of_found_books(general_first_book, str)+1;
+    printw("%d", n_books);
+	books = (ITEM **)calloc(n_books, sizeof(ITEM *));
+        for(i = 0; i < n_books; ++i)//czy nie wychodzi za book??
+		{
+				if(first_book==NULL)
+				{
+					books[i] = new_item((char *)NULL,(char *) NULL);
+				}
+				else
+				{
+					if(strstr(first_book->title, str) != NULL)
+               			books[i] = new_item(first_book->title, first_book->author);
+					else
+						i--;
+					first_book=first_book->next;
+				}
+		}
+
+	books_menu = new_menu((ITEM **)books);
+
+	// Create the window to be associated with the menu and give size
+        my_books_menu = newwin(20, 78, 1, 1);
+        keypad(my_books_menu, TRUE);
+     
+	/* Set main window and sub window */
+        set_menu_win(books_menu, my_books_menu);
+        set_menu_sub(books_menu, derwin(my_books_menu, 17, 76, 3, 1));//max height and width in subwindow
+		set_menu_format(books_menu, 16, 1);//16 row 1 column
+			
+	/* Set menu mark to the string " * " */
+        set_menu_mark(books_menu, " * ");
+
+	/* Print a border around the main window and print a title */
+    box(my_books_menu, 0, 0);
+	print_in_middle(my_books_menu, 1, 0, 78, "Found");
+	mvwaddch(my_books_menu, 2, 0, ACS_LTEE);
+	mvwhline(my_books_menu, 2, 1, ACS_HLINE, 76);
+	mvwaddch(my_books_menu, 2, 78, ACS_RTEE);
+        
+	/* Post the menu */
+	post_menu(books_menu);
+	wrefresh(my_books_menu);
+	
+	//attron(COLOR_PAIR(2));
+	mvprintw(LINES - 2, 0, "Use PageUp and PageDown to scoll down or up a page of items");
+	mvprintw(LINES - 1, 0, "Arrow Keys to navigate (F1 to Exit)");
+	//attroff(COLOR_PAIR(2));
+	refresh();
+
+	while((c = wgetch(my_books_menu)) != KEY_F(1))
+	{       switch(c)
+	        {	case KEY_DOWN:
+				menu_driver(books_menu, REQ_DOWN_ITEM);
+				break;
+			case KEY_UP:
+				menu_driver(books_menu, REQ_UP_ITEM);
+				break;
+			case KEY_NPAGE:
+				menu_driver(books_menu, REQ_SCR_DPAGE);
+				break;
+			case KEY_PPAGE:
+				menu_driver(books_menu, REQ_SCR_UPAGE);
+				break;
+			case 10:
+			{	
+				char temp[60];
+				temp[0]='\0';
+				strcat(temp, item_name(current_item(books_menu)));
+				//display_single_book();
+				move(20, 0);
+				clrtoeol();
+				use_default_colors();
+				mvprintw(20, 0, "Item selected is : %s", 
+						temp);
+				pos_menu_cursor(books_menu);
+				
+
+				refresh();
+			}
+				break;
+		}
+                wrefresh(my_books_menu);
+	}	
+
+	/* Unpost and free all the memory taken up */
+        clear();
+        delwin(my_books_menu);
+        unpost_menu(books_menu);
+        free_menu(books_menu);
+        for(i = 0; i < n_books; ++i)
+                free_item(books[i]);
+	
+}
+
+void search_input(int ch, FORM *form, FIELD *fields[3])
+{
 
 	switch (ch) {
 		case 10:
@@ -12,20 +125,8 @@ static void search_input(int ch, FORM *form, FIELD *fields[3])
 			form_driver(form, REQ_NEXT_FIELD);
 			form_driver(form, REQ_PREV_FIELD);
 			move(LINES-3, 2);
-
-			for (i = 0; fields[i]; i++) {
-
-				printw("%s", trim_whitespaces(field_buffer(fields[i], 0)));
-
-				if (field_opts(fields[i]) & O_ACTIVE)
-					printw("\"\t");
-				else
-					printw(": \"");
-			}
-
-			refresh();
-			pos_form_cursor(form);
-            ch=KEY_F(1);
+            clear();
+            display_found(trim_whitespaces(field_buffer(fields[1], 0)));      
 			break;
 		case KEY_LEFT:
 			form_driver(form, REQ_PREV_CHAR);
@@ -49,6 +150,7 @@ static void search_input(int ch, FORM *form, FIELD *fields[3])
 			form_driver(form, ch);
 			break;
 	}
+   
 }
 
 void search_pop_up()
@@ -91,10 +193,13 @@ void search_pop_up()
 	wrefresh(win_body);
 	wrefresh(win_form);
 
-	while ((ch = getch()) != KEY_F(1))
+	while ((ch = getch()) !=KEY_F(1))//27
 	{
 		search_input(ch, form, fields);
-		wrefresh(win_form);
+       if(ch==10)
+            break;
+        wrefresh(win_form);
+        refresh();
 	}
 	unpost_form(form);
 	free_form(form);
@@ -102,5 +207,6 @@ void search_pop_up()
 	free_field(fields[1]);
 	delwin(win_form);
 	delwin(win_body);
+    
 
 }

@@ -4,6 +4,7 @@
         "assert.h": "c",
         "info_win.h": "c",
         "logic.h": "c",
-        "win_lent_books.h": "c"
+        "win_lent_books.h": "c",
+        "stdlib.h": "c"
     }
 }
