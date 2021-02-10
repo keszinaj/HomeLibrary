@@ -379,6 +379,19 @@ void user_change_data(book_t *f_book, char *title, char *author, char *red, char
     } 
 
 }
+
+void change_lent_status(book_t *book)
+{
+    if(book==NULL)
+    {
+        
+    }
+    if(book!=NULL)
+    {
+        book->lent=0;
+        //strcpy(book->whom_l, " ");
+    }
+}
 /**
 "Bardzo potrzebna mi jest przyjazn Pana","Zbigniew Herbert","2","Polka nad lozkiem","182","4","listy","listy","0","cos"
 "Folwark zwierzęcy ","George Orwell","7","Szafa w salonie","128","5","moje notatki","klasyka","1","Slawek"

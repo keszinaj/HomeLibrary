@@ -9,6 +9,7 @@
 #include "ncurses_my_fun.h"
 void display_lent_books(book_t *first_book)
 {
+	book_t *still_first_book=first_book;
 	initscr();
 	
         cbreak();
@@ -97,19 +98,27 @@ void display_lent_books(book_t *first_book)
 				mvprintw(20, 0, "Item selected is : %s", 
 						temp);
 				pos_menu_cursor(books_menu);
-				
+				book_t *book=return_book_struct(temp, still_first_book);
+				if(book==NULL)
+					printw("adsaidshfbsjkdfkl");
+				else
+					change_lent_status(book);
+				clrtoeol();
 
 				refresh();
 			}
-				break;
+				return;
+			
 		}
                 wrefresh(my_books_menu);
 	}	
 
+	clear();
 	/* Unpost and free all the memory taken up */
         unpost_menu(books_menu);
         free_menu(books_menu);
         for(i = 0; i < n_books; ++i)
                 free_item(books[i]);
 	endwin();
+	
 }
