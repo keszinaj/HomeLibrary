@@ -13,6 +13,7 @@
 #include "win_add_book.h"
 #include "win_lent_books.h"
 #include "win_search.h"
+#include "win_edit_book.h"
 int print_menu(book_t *first_book);
 void init_scr(book_t *first_book);
 void display_books(book_t *first_book);

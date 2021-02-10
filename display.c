@@ -11,6 +11,7 @@
 #include "win_add_book.h"
 #include "win_lent_books.h"
 #include "win_search.h"
+#include "win_edit_book.h"
 int print_menu(book_t *first_book);
 void init_scr(book_t *first_book);
 void display_books(book_t *first_book);
@@ -205,7 +206,7 @@ void display_books(book_t *first_book)
 	
 	//attron(COLOR_PAIR(2));
 	mvprintw(LINES - 2, 0, "Use Arrow Keys to navigate ");
-	mvprintw(LINES - 1, 0, "Use Enter to see more detail or use F1 to exit");
+	mvprintw(LINES - 1, 0, "Use Enter to see more detail or use F1 to exit use Backspace to delete");
 	//attroff(COLOR_PAIR(2));
 	refresh();
 
@@ -246,6 +247,15 @@ void display_books(book_t *first_book)
 				dispaly_delated_window();
 			}
 			return;
+			case 101://e
+			{
+				char str[60];
+				str[0]='\0';
+				strcat(str, item_name(current_item(books_menu)));
+				display_edit_book(str);
+			}
+				return;
+
 		}
 		           
 	}	

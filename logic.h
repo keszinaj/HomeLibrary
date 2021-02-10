@@ -33,4 +33,6 @@ int number_of_books(book_t *first_book);
 int number_of_lent_books(book_t *first_book);
 book_t *return_book_struct(char *title, book_t *first_book);
 int number_of_found_books(book_t *first_book, char *str);
+void user_change_data(book_t *f_book, char *title, char *author, char *red, char *wis, char *np, char *notes, char *le, char *tag, char *whom, char *star);
+
 #endif

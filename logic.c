@@ -349,6 +349,36 @@ int number_of_found_books(book_t *first_book, char *str)
     }
     return n;
 }
+
+
+void user_change_data(book_t *f_book, char *title, char *author, char *red, char *wis, char *np, char *notes, char *le, char *tag, char *whom, char *star)
+{
+    int num=-1;
+    strcpy(f_book->title,title);
+    strcpy(f_book->author, author); 
+    if(strcmp("yes\0", red)==0) 
+        f_book->red=1;  
+    else
+        f_book->red=0;  
+   strcpy(f_book->where_is, wis);  
+   num=atoi(np); 
+    f_book->num_pages=num; 
+    strcpy(f_book->notes, notes);   
+    strcpy(f_book->tag, tag); 
+    num=atoi(star);
+     f_book->stars=num;
+    if(strcmp("yes\0", le)==0) 
+    {
+        f_book->lent=1;
+        strcpy(f_book->whom_l, whom);
+    }  
+    else
+    {
+        f_book->lent=0; 
+        strcpy(f_book->whom_l, " ");
+    } 
+
+}
 /**
 "Bardzo potrzebna mi jest przyjazn Pana","Zbigniew Herbert","2","Polka nad lozkiem","182","4","listy","listy","0","cos"
 "Folwark zwierzęcy ","George Orwell","7","Szafa w salonie","128","5","moje notatki","klasyka","1","Slawek"
