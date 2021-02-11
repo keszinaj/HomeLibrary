@@ -9,7 +9,7 @@
 
 void lcatch(int ch, FORM *form, FIELD *fields[19])
 {
-	int i;
+	
 //set keyboard behaviour in window
 	switch (ch) {
 		case KEY_F(2):

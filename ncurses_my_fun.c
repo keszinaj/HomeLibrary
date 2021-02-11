@@ -1,6 +1,7 @@
 #include <ncurses.h>
-#include <string.h>
+#include <string.h> 
 #include<ctype.h>
+#include <stdio.h>
 
 
 //I use this function due to strange format of data in form class from form.h

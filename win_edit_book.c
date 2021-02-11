@@ -7,7 +7,7 @@
 
 void move_from(book_t *book, int ch, FORM *form, FIELD *fields[21])
 {
-	int i;
+	
 //set keyboard behaviour in window
 	switch (ch) {
 		case KEY_F(2)://save in struct
@@ -109,9 +109,13 @@ void display_edit_book(char *str)
     set_field_buffer(fields[15],0, book->tag);
 	set_field_buffer(fields[16],0, "Lent[yes/no]:");
     if(book->lent==1)
+	{
         set_field_buffer(fields[17],0, "yes");
+	}
     else
+	{
         set_field_buffer(fields[17],0, "no");
+	}
 	set_field_buffer(fields[18],0, "Whom:");
     set_field_buffer(fields[19],0, book->whom_l);
 //visual changes

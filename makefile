@@ -2,7 +2,7 @@
 output: main.o win_book.o win_edit_book.o win_search.o win_lent_books.o win_add_book.o ncurses_my_fun.o info_win.o display.o logic.o
 	gcc main.o win_book.o win_edit_book.o win_search.o win_lent_books.o win_add_book.o ncurses_my_fun.o info_win.o display.o logic.o -o output -lform -lncurses -lmenu 
 logic.o: logic.c logic.h
-	gcc -c -std=c11 logic.c
+	gcc -c -std=c11 -Wall -Wextra -Werror -lm logic.c
 display.o: display.c display.h
 	gcc -c display.c -lform -lncurses -lmenu 
 info_win.o: info_win.c info_win.h
