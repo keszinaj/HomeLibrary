@@ -1,10 +1,10 @@
 #include <ncurses.h>
 #include "ncurses_my_fun.h"
 #include "logic.h"
+//set of useful simple windows
 
 void display_single_book(char *title, book_t *first_book)
 {
-	//clear;
 	book_t *bookdis=return_book_struct(title, first_book);
 	if(bookdis==NULL)
 		return;
@@ -12,9 +12,10 @@ void display_single_book(char *title, book_t *first_book)
 	bookwin=newwin(20, 78, 1, 1);
 	//print nice window
 	box(bookwin, 0, 0);
+
+	//display content from struct
 	mvwprintw(bookwin, 1, 2, "Title:");
 	mvwprintw(bookwin, 1, 10, bookdis->title);
-	//display content from struct
 	mvwprintw(bookwin, 3, 2, "Author:");
 	mvwprintw(bookwin, 3, 10, bookdis->author);
 	mvwprintw(bookwin, 5, 2, "Number of pages:");
@@ -52,35 +53,38 @@ void display_single_book(char *title, book_t *first_book)
 	wclear(bookwin);
 	endwin();
 }
+
+
+
 void display_info_win()
 {
 	WINDOW *win;
 	win=newwin(20, 78, 1, 1);
-	//print nice window
 	box(win, 0, 0);
+
 	print_in_middle(win, 1, 0, 78, "Information about program");
+
+	//draw line
 	mvwaddch(win, 2, 0, ACS_LTEE);
 	mvwhline(win, 2, 1, ACS_HLINE, 76);
 	mvwaddch(win, 2, 78, ACS_RTEE);
+
 	mvwprintw(win,5, 6, "This program was made by keszianj.");
 	mvprintw(LINES - 2, 0, "Press any key to exit");
 	wrefresh(win);
+
 	refresh();
 	getch();
 }
+
 void dispaly_ssaved_window()
 {
-	//WINDOW *win;
-	//win=newwin(20, 58, 10, 10);
-	//box(win, 0, 0);
-
 	mvprintw(LINES/2-2,COLS/2-7, "SAVED CHANGES");
-	//print_in_middle(stdscr, yMax/2, xMax/2, xMax, "Information about program");
 	mvprintw(LINES - 11, COLS/2-11, "Press any key to exit.");
-	//wrefresh(win);
 	refresh();
 	getch();
 }
+
 void dispaly_delated_window()
 {
 	mvprintw(LINES/2-2,COLS/2-5, "DELETED");

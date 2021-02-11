@@ -6,6 +6,8 @@
         "logic.h": "c",
         "win_lent_books.h": "c",
         "stdlib.h": "c",
-        "ncurses_my_fun.h": "c"
+        "ncurses_my_fun.h": "c",
+        "win_search.h": "c",
+        "display.h": "c"
     }
 }

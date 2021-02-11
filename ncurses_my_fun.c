@@ -2,6 +2,8 @@
 #include <string.h>
 #include<ctype.h>
 
+
+//I use this function due to strange format of data in form class from form.h
 char* trim_whitespaces(char *str)
 {
 	char *end;
@@ -10,7 +12,7 @@ char* trim_whitespaces(char *str)
 	while(isspace(*str))
 		str++;
 
-	if(*str == 0) // all spaces?
+	if(*str == 0)
 		return str;
 
 	// trim trailing space
@@ -19,11 +21,13 @@ char* trim_whitespaces(char *str)
 	while(end > str && isspace(*end))
 		end--;
 
-	// write new null terminator
-	*(end+1) = '\0'; //is it good idea???
+	// write new null at the end
+	*(end+1) = '\0'; 
 
 	return str;
 }
+
+//to print the title of window where I want
 void print_in_middle(WINDOW *win, int starty, int startx, int width, char *string)
 {	int length, x, y;
 	float temp;
@@ -41,7 +45,7 @@ void print_in_middle(WINDOW *win, int starty, int startx, int width, char *strin
 	length = strlen(string);
 	temp = (width - length)/ 2;
 	x = startx + (int)temp;
-	//watrron
+	//watrron <-collor etc
 	mvwprintw(win, y, x, "%s", string);
 	//watroff
 	refresh();

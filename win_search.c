@@ -4,7 +4,7 @@
 #include<menu.h>
 #include <string.h>
 #include <stdlib.h>
-#include <ctype.h>
+
 #include "ncurses_my_fun.h"
 #include "logic.h"
 #include "display.h"

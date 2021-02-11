@@ -1,22 +1,17 @@
 #include <ncurses.h>
 #include<form.h>
-#include<menu.h>
-#include <assert.h>
-#include <string.h>
-#include <stdlib.h>
-#include <ctype.h>
 #include "ncurses_my_fun.h"
 #include "logic.h"
 #include "display.h"
 
 
-void move_from(book_t *book, int ch, FORM *form, FIELD *fields[21])//może warto to dodać do jakiejś wspólnej  bot to to samo co add books
+void move_from(book_t *book, int ch, FORM *form, FIELD *fields[21])
 {
 	int i;
-
+//set keyboard behaviour in window
 	switch (ch) {
-		case KEY_F(2):
-			// Or the current field buffer won't be sync with what is displayed
+		case KEY_F(2)://save in struct
+			{
 			form_driver(form, REQ_NEXT_FIELD);
 			form_driver(form, REQ_PREV_FIELD);
 			user_change_data(book, trim_whitespaces(field_buffer(fields[1], 0)),
@@ -29,12 +24,11 @@ void move_from(book_t *book, int ch, FORM *form, FIELD *fields[21])//może warto
 			trim_whitespaces(field_buffer(fields[15], 0)),
 			trim_whitespaces(field_buffer(fields[19], 0)),
 			trim_whitespaces(field_buffer(fields[9], 0)));
-
-			//must add tag
 			move(LINES-3, 2);
 			refresh();
 			pos_form_cursor(form);
 			break;
+			}
 
 		case KEY_DOWN:
 			form_driver(form, REQ_NEXT_FIELD);
@@ -52,9 +46,7 @@ void move_from(book_t *book, int ch, FORM *form, FIELD *fields[21])//może warto
 
 		case KEY_RIGHT:
 			form_driver(form, REQ_NEXT_CHAR);
-			break;
-
-		// Delete the char before cursor
+			break;		
 		case KEY_BACKSPACE:
 		case 127:
 			form_driver(form, REQ_DEL_PREV);
@@ -75,9 +67,11 @@ void move_from(book_t *book, int ch, FORM *form, FIELD *fields[21])//może warto
 void display_edit_book(char *str)
 {
     book_t *book=return_book_struct(str, general_first_book);
+
 	clear();
 	curs_set(1);
 	keypad(stdscr, true);
+	//create fields
 	FIELD *fields[21];
 	FORM *myForm;
 	int pom_pos=2;
@@ -90,6 +84,7 @@ void display_edit_book(char *str)
 	}
 	fields[20]=NULL;//as docs say
     char result[10]; 
+	//fill up field
 	set_field_buffer(fields[0],0, "Title:");
     set_field_buffer(fields[1],0, book->title);
 	set_field_buffer(fields[2],0, "Author:");
@@ -119,7 +114,7 @@ void display_edit_book(char *str)
         set_field_buffer(fields[17],0, "no");
 	set_field_buffer(fields[18],0, "Whom:");
     set_field_buffer(fields[19],0, book->whom_l);
-
+//visual changes
 	for(int i=1;i<20;i=i+2)
 	{
 		set_field_back(fields[i], A_UNDERLINE);
@@ -139,6 +134,7 @@ void display_edit_book(char *str)
 	int ch;
 	while((ch=getch())!= KEY_F(1))
 		move_from(book, ch, myForm, fields);
+	//free memory
 	unpost_form(myForm);
 	free_form(myForm);
 	for(int i=0;i<21;i++)

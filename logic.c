@@ -3,9 +3,9 @@
 #include<stdbool.h>
 #include <string.h>
 
-
+//struct which contain all info about books
 struct books{
-    int index_number;//jeszcze nie wykorzystałem
+    int index_number;
     char title[60];
     char author[60];
     int red;
@@ -20,70 +20,11 @@ struct books{
     };
 typedef struct books book_t;
 
-int book_index=0; //zamien to za index!!!!!
+int book_index=0; 
 
 int index=0;
-/**
-to do:
--dodaj index~~DONE
--https://rosettacode.org/wiki/Simple_database
--zapisywanie wszystkiego w pliku~ DONE
--walidacja zapisanych danych żeby nie miały "
--szukanie
--pożyczone oraz ich edytowanie
--DEFAKTO można już zacząć zabierać się za frontend
-
-int main()
-{
-    printf("Program zarządzajacy ksiazkami\n");
-    printf("Wpisz\n1 - by wypisać baze danych\n2- by dopisać książke do  bazy danych -3 aby usunac ksiazke po id\n-4 by wyjsć z programu\n");
-    int choice;
-    book_t *data_base_list=NULL;
-    data_base_list=load_data_base();
 
 
-    while(true)
-    {
-        printf("wprowadz numer : ");
-        scanf("%d", &choice);
-        switch(choice)
-        {
-
-        case 1:
-            {
-                print_db(data_base_list);
-                break;
-            }
-        case 2:
-            {
-                data_base_list=add_b(data_base_list);
-                break;
-            }
-        case 3:
-            {
-                int b;
-                printf(" podaj ksiązke do usuniecia");
-                scanf("%d", &b);
-                data_base_list=rmv_if(data_base_list, b);
-                break;
-            }
-        case 4:
-            {
-                data_base_list=save(data_base_list);
-                break;
-            }
-        case 5:
-            {
-                return 0;
-            }
-
-        }
-
-    }
-    data_base_list=add_b(data_base_list);
-    return 0;
-}
-*/
 book_t *load_data_base()
 {
     FILE *db;
@@ -98,15 +39,14 @@ book_t *load_data_base()
     fseek(db, 0, SEEK_END);
     if(ftell(db)==0)
     {
-        printf("Database is empty");
         return NULL;
     }
     fseek(db, 0, SEEK_SET);
 
     book_t *first_book;
     first_book= (book_t *) malloc(sizeof(book_t));
-    //first_book=NULL;//to dopisałem nie wiem czy to legitne
-
+    
+    //load forom database to struct
     char number_string[10];
     fscanf(db, " \"%[^\"]\",", first_book->title);
     fscanf(db, " \"%[^\"]\",", first_book->author);
@@ -164,6 +104,8 @@ book_t *load_data_base()
     fclose(db);
     return first_book;
 }
+
+
 void print_db_slot(book_t *f_book)
 {
     printf("title %s\n", f_book->title);
@@ -176,6 +118,7 @@ void print_db_slot(book_t *f_book)
     printf("lent: %d\n", f_book->lent);
     printf("whom_l: %s\n", f_book->whom_l);
 }
+
 void print_db(book_t *f_book)
 {
     if(f_book==NULL)
@@ -223,6 +166,8 @@ void user_add_data(book_t *f_book, char *title, char *author, char *red, char *w
     f_book->next=NULL;
     index++;
 }
+
+
 book_t *add_b(book_t *book_list, char *title, char *author, char *red, char *wis, char *np, char *notes, char *le, char *tag, char *whom, char *star)
 {
         book_t *new_book;
@@ -244,7 +189,6 @@ book_t *rmv_if(book_t *book_list, char *str)
 {
     if(book_list==NULL)
     {
-        printf("lista jest pusta");
         return NULL;
     }
     book_t *f_book =book_list;
@@ -277,9 +221,8 @@ book_t *save(book_t *book_list)
     FILE *db;
     book_t *f_book =book_list;
     db=fopen("database.txt", "w+");
-    if(db==NULL) //error handling
+    if(db==NULL) 
     {
-        printf("ERROR FILE (1)\n");
         exit(-1);
     }
     if(book_list==NULL)
@@ -310,6 +253,7 @@ int number_of_books(book_t *first_book)
     }
     return n;
 }
+
 int number_of_lent_books(book_t *first_book)
 {
     int n=0;
@@ -323,6 +267,7 @@ int number_of_lent_books(book_t *first_book)
     }
     return n;
 }
+
 book_t *return_book_struct(char *title, book_t *first_book)
 {
     if(first_book==NULL)
@@ -401,6 +346,6 @@ void change_lent_status(book_t *book)
 **/
 
 
-//void search_book(book_t *book_list)
+
 
 

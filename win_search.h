@@ -3,12 +3,13 @@
 
 #include <ncurses.h>
 #include<form.h>
-#include<menu.h>
 #include <assert.h>
+#include<menu.h>
 #include <string.h>
 #include <stdlib.h>
-#include <ctype.h>
+
 #include "ncurses_my_fun.h"
+#include "logic.h"
 #include "display.h"
 #include "ncurses_my_fun.h"
 
