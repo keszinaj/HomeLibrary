@@ -59,8 +59,8 @@ void display_books(book_t *first_book)
 	wrefresh(my_books_menu);
 	
 	//attron;
-	mvprintw(LINES - 2, 0, "Use Arrow Keys to navigate click 'e' to edit");
-	mvprintw(LINES - 1, 0, "Use Enter to see more detail or use F1 to exit use Backspace to delete");
+	mvprintw(LINES - 2, 0, "Use Arrow Keys to navigate or click 'e' to edit");
+	mvprintw(LINES - 1, 0, "Use Enter to see more detail or use F1 to exit or use Backspace to delete");
 	//attroff;
 	refresh();
     //set keyboard behaviour in window

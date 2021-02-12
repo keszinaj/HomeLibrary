@@ -53,7 +53,7 @@ int print_menu(book_t *first_book)
 	
 	mvwprintw(logowin, 1,5, "You have %d books.", number_of_books(general_first_book));
 	mvwprintw(logowin, 2,5, "You lent %d books.", number_of_lent_books(general_first_book));
-
+    mvwprintw(logowin, 20,10, "Remember to SAVE your changes.");
     wrefresh(menuwin);
     wrefresh(logowin);
 
