@@ -6,7 +6,7 @@
 #include<stdbool.h>
 #include <string.h>
 struct books{
-    int index_number;//jeszcze nie wykorzystałem
+    int index_number;
     char title[60];
     char author[60];
     int red;

@@ -69,7 +69,7 @@ void display_info_win()
 	mvwhline(win, 2, 1, ACS_HLINE, 76);
 	mvwaddch(win, 2, 78, ACS_RTEE);
 
-	mvwprintw(win,5, 6, "This program was made by keszianj.");
+	mvwprintw(win,5, 6, "Made by keszianj.");
 	mvprintw(LINES - 2, 0, "Press any key to exit");
 	wrefresh(win);
 

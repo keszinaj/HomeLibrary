@@ -18,14 +18,18 @@ Kompilacja:
  ```bash
     make
 ```
+Odpalenie programu:
 
+ ```bash
+    ./hlib
+```
  # Instrukcja obsługi programu
- Każde okienko ma  miejsce pod spodem gdzie opisane są wszystkie możliwe komendy i ruchy
+ Każde okienko ma  miejsce pod spodem gdzie opisane są wszystkie możliwe komendy i ruchy.
 
  # Opis funkcjonalności projektu
 
 display.c - odpowiada za obsługę menu oraz jego wyświetlanie
-logic.c - tutaj znajdują sie wszystkie funkcje związane z obsługą bazy danych 
+logic.c - tutaj znajdują się wszystkie funkcje związane z obsługą bazy danych 
 oraz logika działania całego programu i przetwarzania danych
 win_book.c - odpowiada oknu które pojawi się po wejściu w książki
 win_edit_book.c - odpowiada oknu które pojawi się po edytowaniu książki

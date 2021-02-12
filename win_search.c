@@ -1,6 +1,6 @@
 #include <ncurses.h>
 #include<form.h>
-#include <assert.h>
+#include <assert.h> //to check out how it works
 #include<menu.h>
 #include <string.h>
 #include <stdlib.h>
@@ -42,7 +42,7 @@ void display_found(char *str)
 
 	books_menu = new_menu((ITEM **)books);
 
-	// Create the window to be associated with the menu and give size
+	// Create the window 
         my_books_menu = newwin(20, 78, 1, 1);
         keypad(my_books_menu, TRUE);
      
@@ -54,21 +54,21 @@ void display_found(char *str)
 	
         set_menu_mark(books_menu, " * ");
 
-	/* Print a border around the main window and print a title */
+	// Print a border 
     box(my_books_menu, 0, 0);
 	print_in_middle(my_books_menu, 1, 0, 78, "Found");
 	mvwaddch(my_books_menu, 2, 0, ACS_LTEE);
 	mvwhline(my_books_menu, 2, 1, ACS_HLINE, 76);
 	mvwaddch(my_books_menu, 2, 78, ACS_RTEE);
         
-	/* Post the menu */
+	
 	post_menu(books_menu);
 	wrefresh(my_books_menu);
 	
-	//attron(COLOR_PAIR(2));
+
 	mvprintw(LINES - 2, 0, "Use PageUp and PageDown to scoll down or up a page of items");
 	mvprintw(LINES - 1, 0, "Arrow Keys to navigate (F1 to Exit)");
-	//attroff(COLOR_PAIR(2));
+	
 	refresh();
 
 	while((c = wgetch(my_books_menu)) != KEY_F(1))
@@ -106,7 +106,7 @@ void display_found(char *str)
                 wrefresh(my_books_menu);
 	}	
 
-	/* Unpost and free all the memory taken up */
+	//Free memory
         clear();
         delwin(my_books_menu);
         unpost_menu(books_menu);
@@ -160,6 +160,8 @@ void search_pop_up()
  WINDOW *win_body, *win_form;
 	int ch;
 	win_body = newwin(12, 50, 5, 5);
+	//assert is fun which allows as to test program
+	// in a nice way
 	assert(win_body != NULL);
 	box(win_body, 0, 0);
 	win_form = derwin(win_body, 6, 48, 2, 1);

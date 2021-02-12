@@ -1,6 +1,6 @@
 #program POZMIENIEAJ TUTTAJ na lepsze
-output: main.o win_book.o win_edit_book.o win_search.o win_lent_books.o win_add_book.o ncurses_my_fun.o info_win.o display.o logic.o
-	gcc main.o win_book.o win_edit_book.o win_search.o win_lent_books.o win_add_book.o ncurses_my_fun.o info_win.o display.o logic.o -o output -lform -lncurses -lmenu 
+hlib: main.o win_book.o win_edit_book.o win_search.o win_lent_books.o win_add_book.o ncurses_my_fun.o info_win.o display.o logic.o
+	gcc main.o win_book.o win_edit_book.o win_search.o win_lent_books.o win_add_book.o ncurses_my_fun.o info_win.o display.o logic.o -o hlib -lform -lncurses -lmenu 
 logic.o: logic.c logic.h
 	gcc -c -std=c11 -Wall -Wextra -Werror -lm logic.c
 display.o: display.c display.h
@@ -22,4 +22,4 @@ win_book.o: win_book.c win_book.h
 main.o: main.c 
 	gcc -c -std=c11 -Wall -Wextra -Werror -lm main.c 
 clean: 
-	rm *.o output
+	rm *.o hlib
