@@ -13,7 +13,7 @@ struct books{
     int stars;
     char where_is[100];
     char notes[500];
-    char tag[30];
+    char tag[60];
     int lent;
     char whom_l[35];
     struct books* next;
@@ -140,6 +140,8 @@ void user_add_data(book_t *f_book, char *title, char *author, char *red, char *w
 {
     int num=-1;
     strcpy(f_book->title,title);
+    if(title==NULL)
+      strcpy(f_book->title, " "); 
     strcpy(f_book->author, author); 
     if(strcmp("yes\0", red)==0) 
         f_book->red=1;  
@@ -148,8 +150,12 @@ void user_add_data(book_t *f_book, char *title, char *author, char *red, char *w
    strcpy(f_book->where_is, wis);  
    num=atoi(np); 
     f_book->num_pages=num; 
-    strcpy(f_book->notes, notes);   
+    strcpy(f_book->notes, notes);
+    if(notes==NULL)
+      strcpy(f_book->notes, " ");    
     strcpy(f_book->tag, tag); 
+    if(tag==NULL)
+      strcpy(f_book->tag, " ");
     num=atoi(star);
      f_book->stars=num;
     if(strcmp("yes\0", le)==0) 

@@ -13,6 +13,12 @@ Pobranie dodatkowych bibliotek potrzrebynych do uruchomienia programu:
 Instrukcja jak poprawnie zainstalować biblioteke ncurses:
  https://www.cyberciti.biz/faq/linux-install-ncurses-library-headers-on-debian-ubuntu-centos-fedora/
 
+Kompilacja:
+
+ ```bash
+    make
+```
+
  # Instrukcja obsługi programu
  Każde okienko ma  miejsce pod spodem gdzie opisane są wszystkie możliwe komendy i ruchy
 
