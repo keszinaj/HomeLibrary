@@ -1,16 +1,16 @@
 # HomeLibrary
 
-# Dokumentacja uruchamieniowa
+# Dokumentacja uruchomieniowa
 System operacyjny: Linux
 
 Kompilator: gcc
 
-Pobranie dodatkowych bibliotek potrzrebynych do uruchomienia programu:
+Pobranie dodatkowych bibliotek potrzebnych do uruchomienia programu:
 
 ```bash
  sudo apt-get install libncurses5-dev libncursesw5-dev
 ```
-Instrukcja jak poprawnie zainstalować biblioteke ncurses:
+Instrukcja jak poprawnie zainstalować bibliotekę ncurses:
  https://www.cyberciti.biz/faq/linux-install-ncurses-library-headers-on-debian-ubuntu-centos-fedora/
 
 Kompilacja:
@@ -26,7 +26,7 @@ Kompilacja:
 
 display.c - odpowiada za obsługę menu oraz jego wyświetlanie
 logic.c - tutaj znajdują sie wszystkie funkcje związane z obsługą bazy danych 
-oraz logika dzialania całego programu i przetwarzania danych
+oraz logika działania całego programu i przetwarzania danych
 win_book.c - odpowiada oknu które pojawi się po wejściu w książki
 win_edit_book.c - odpowiada oknu które pojawi się po edytowaniu książki
 win_search.c -odpowiada oknu które pojawi się podczas szukania książki

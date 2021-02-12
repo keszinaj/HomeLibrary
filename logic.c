@@ -31,7 +31,6 @@ book_t *load_data_base()
     db=fopen("./database.txt", "r");
     if(db==NULL) //error handling
     {
-        printf("ERROR FILE (1)\n");
         exit(-1);
     }
 

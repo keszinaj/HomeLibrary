@@ -8,5 +8,6 @@ int main()
     data_base_list=load_data_base();
     //init program
     init_scr(data_base_list);
+
     return 0;
 }
