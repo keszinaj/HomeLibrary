@@ -9,9 +9,10 @@
 #include "logic.h"
 #include "display.h"
 #include "ncurses_my_fun.h"
+
 void display_found(char *str)
 {
-    
+    curs_set(0);
 	//val
     book_t *first_book=general_first_book;
 	ITEM **books;
@@ -22,9 +23,8 @@ void display_found(char *str)
 
 	//initialize item
 	n_books=number_of_found_books(general_first_book, str)+1;
-    printw("%d", n_books);
 	books = (ITEM **)calloc(n_books, sizeof(ITEM *));
-        for(i = 0; i < n_books; ++i)//czy nie wychodzi za book??
+        for(i = 0; i < n_books; ++i)
 		{
 				if(first_book==NULL)
 				{
@@ -46,12 +46,12 @@ void display_found(char *str)
         my_books_menu = newwin(20, 78, 1, 1);
         keypad(my_books_menu, TRUE);
      
-	/* Set main window and sub window */
+	// Set main window and sub win
         set_menu_win(books_menu, my_books_menu);
         set_menu_sub(books_menu, derwin(my_books_menu, 17, 76, 3, 1));//max height and width in subwindow
 		set_menu_format(books_menu, 16, 1);//16 row 1 column
 			
-	/* Set menu mark to the string " * " */
+	
         set_menu_mark(books_menu, " * ");
 
 	/* Print a border around the main window and print a title */
@@ -90,16 +90,16 @@ void display_found(char *str)
 				char temp[60];
 				temp[0]='\0';
 				strcat(temp, item_name(current_item(books_menu)));
-				//display_single_book();
+				display_single_book(temp, general_first_book);
 				move(20, 0);
 				clrtoeol();
 				use_default_colors();
-				mvprintw(20, 0, "Item selected is : %s", 
-						temp);
 				pos_menu_cursor(books_menu);
-				
-
+				redrawwin(my_books_menu);
+				wrefresh(my_books_menu);
 				refresh();
+
+			
 			}
 				break;
 		}

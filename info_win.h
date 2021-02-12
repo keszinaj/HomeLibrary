@@ -9,5 +9,6 @@ void display_single_book(char *title, book_t *first_book);
 void display_info_win();
 void dispaly_ssaved_window();
 void dispaly_delated_window();
+void dispaly_new_book_saved();
 
 #endif

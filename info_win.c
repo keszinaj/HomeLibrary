@@ -92,3 +92,11 @@ void dispaly_delated_window()
 	refresh();
 	getch();
 }
+void dispaly_new_book_saved()
+{
+	curs_set(0);
+	mvprintw(LINES/2-2,COLS/2-5, "Saved");
+	mvprintw(LINES - 11, COLS/2-16, "New book added press F1 to exit");
+
+	refresh();
+}

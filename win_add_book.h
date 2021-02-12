@@ -8,7 +8,7 @@
 #include "ncurses_my_fun.h"
 #include "logic.h"
 #include "display.h"
-
+#include "info_win.h"
 void lcatch(int ch, FORM *form, FIELD *fields[19]);
 void display_add_book();
 

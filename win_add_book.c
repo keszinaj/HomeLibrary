@@ -5,7 +5,7 @@
 #include "ncurses_my_fun.h"
 #include "logic.h"
 #include "display.h"
-
+#include "info_win.h"
 
 void lcatch(int ch, FORM *form, FIELD *fields[19])
 {
@@ -17,7 +17,7 @@ void lcatch(int ch, FORM *form, FIELD *fields[19])
 			// Or the current field buffer won't be sync with what is displayed
 			form_driver(form, REQ_NEXT_FIELD);
 			form_driver(form, REQ_PREV_FIELD);
-			add_b(general_first_book, trim_whitespaces(field_buffer(fields[1], 0)),
+			general_first_book=add_b(general_first_book, trim_whitespaces(field_buffer(fields[1], 0)),
 			trim_whitespaces(field_buffer(fields[3], 0)),
 			trim_whitespaces(field_buffer(fields[5], 0)),
 			trim_whitespaces(field_buffer(fields[11], 0)),
@@ -27,13 +27,14 @@ void lcatch(int ch, FORM *form, FIELD *fields[19])
 			trim_whitespaces(field_buffer(fields[15], 0)),
 			trim_whitespaces(field_buffer(fields[19], 0)),
 			trim_whitespaces(field_buffer(fields[9], 0)));
-			move(LINES-3, 2);
-
-	
+			//move(LINES-3, 2);
+			clear();
+			dispaly_new_book_saved();
+			
 
 			refresh();
 			pos_form_cursor(form);
-			break;
+			return;
 		}
 		case KEY_DOWN:
 		{
