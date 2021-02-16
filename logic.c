@@ -169,10 +169,11 @@ void user_add_data(book_t *f_book, char *title, char *author, char *red, char *w
 
 book_t *add_b(book_t *book_list, char *title, char *author, char *red, char *wis, char *np, char *notes, char *le, char *tag, char *whom, char *star)
 {
+    //
         book_t *new_book;
         new_book = (book_t *) malloc(sizeof(book_t));
         user_add_data(new_book, title, author, red, wis, np, notes, le, tag, whom, star);
-
+       
         new_book->next=NULL;
         if(book_list==NULL)
             return new_book;

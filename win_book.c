@@ -123,6 +123,9 @@ void display_books(book_t *first_book)
         unpost_menu(books_menu);
         free_menu(books_menu);
         for(i = 0; i < n_books; ++i)
+		{
                 free_item(books[i]);
+		}
+		free(books);
 	endwin();
 }

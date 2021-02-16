@@ -111,8 +111,11 @@ void display_found(char *str)
         delwin(my_books_menu);
         unpost_menu(books_menu);
         free_menu(books_menu);
-        for(i = 0; i < n_books; ++i)
+        for(i = 0; i < n_books; ++i){
                 free_item(books[i]);
+		}
+		free(books);
+
 	
 }
 
@@ -209,6 +212,5 @@ void search_pop_up()
 	free_field(fields[1]);
 	delwin(win_form);
 	delwin(win_body);
-    
-
+   
 }

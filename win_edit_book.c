@@ -136,13 +136,12 @@ void display_edit_book(char *str)
 	curs_set(1);
     refresh();
 	int ch;
-	while((ch=getch())!= KEY_F(1))
+	while((ch = getch()) != KEY_F(1))
 		move_from(book, ch, myForm, fields);
 	//free memory
 	unpost_form(myForm);
 	free_form(myForm);
-	for(int i=0;i<21;i++)
-	{
+	for(int i=0;i<21;i++){
 		free_field(fields[i]);
 	}
 	clear();

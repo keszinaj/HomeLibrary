@@ -114,8 +114,10 @@ void display_lent_books(book_t *first_book)
 	//free memory
         unpost_menu(books_menu);
         free_menu(books_menu);
-        for(i = 0; i < n_books; ++i)
+        for(i = 0; i < n_books; ++i){
                 free_item(books[i]);
+		}
+		free(books);
 	endwin();
 	
 }

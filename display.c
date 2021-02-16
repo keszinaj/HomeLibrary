@@ -76,7 +76,7 @@ int print_menu(book_t *first_book)
         for(int i=0;i<7;i++)
         {
             if(i==highlight)
-                wattron(menuwin, A_REVERSE);
+            wattron(menuwin, A_REVERSE);
             mvwprintw(menuwin, i+1, 1, choices[i]);
             wattroff(menuwin, A_REVERSE);   
         }
