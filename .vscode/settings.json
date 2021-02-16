@@ -9,6 +9,7 @@
         "ncurses_my_fun.h": "c",
         "win_search.h": "c",
         "display.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "win_add_book.h": "c"
     }
 }

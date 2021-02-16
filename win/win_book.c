@@ -1,5 +1,5 @@
 #include<ncurses.h>
-#include "logic.h"
+#include "../backend/logic.h"
 #include "display.h"
 
 void display_books(book_t *first_book)
