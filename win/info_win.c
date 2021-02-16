@@ -1,6 +1,6 @@
 #include <ncurses.h>
-#include "../backend/ncurses_my_fun.h"
-#include "../backend/logic.h"
+#include "ncurses_my_fun.h"
+#include "logic.h"
 //set of useful simple windows
 
 void display_single_book(char *title, book_t *first_book)
