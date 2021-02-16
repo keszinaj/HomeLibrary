@@ -13,13 +13,14 @@ Pobranie dodatkowych bibliotek potrzebnych do uruchomienia programu:
 Instrukcja jak poprawnie zainstalować bibliotekę ncurses:
  https://www.cyberciti.biz/faq/linux-install-ncurses-library-headers-on-debian-ubuntu-centos-fedora/
 
-Kompilacja:
+Compilation:
 
  ```bash
     make
 ```
 Odpalenie programu:
 
+<<<<<<< HEAD
  ```bash
     ./hlib
 ```
@@ -38,3 +39,6 @@ win_lent_books.c -odpowiada oknu które pojawi się podczas przeglądania pożyc
 win_add_book.c-odpowiada oknu które pojawi się podczas dodawania książki
 ncurses_my_fun.c- tutaj znajdują się funkcje które pomogły mi w pracy z biblioteką ncurses
 info_win.c-tutaj znajduje się zbiór prostych okien które mają za zadanie tylko informować użytkownika o tym co zrobił 
+=======
+ 
+>>>>>>> 91c74dd723351352d3862ec7a7675b4cc33521a6
