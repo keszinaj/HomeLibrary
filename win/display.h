@@ -5,9 +5,9 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "logic.h"
+#include "../backend/logic.h"
 #include "info_win.h"
-#include "ncurses_my_fun.h"
+#include "../backend/ncurses_my_fun.h"
 #include "win_add_book.h"
 #include "win_lent_books.h"
 #include "win_search.h"

@@ -2,8 +2,8 @@
 #include<form.h>
 #include <stdlib.h>
 
-#include "ncurses_my_fun.h"
-#include "logic.h"
+#include "../backend/ncurses_my_fun.h"
+#include "../backend/logic.h"
 #include "display.h"
 #include "info_win.h"
 

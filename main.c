@@ -1,5 +1,5 @@
-#include "display.h"
-#include "logic.h"
+#include "./win/display.h"
+#include "./backend/logic.h"
 
 int main()
 {
