@@ -5,10 +5,10 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "../backend/ncurses_my_fun.h"
-#include "../backend/logic.h"
+#include "ncurses_my_fun.h"
+#include "logic.h"
 #include "display.h"
-																		
+#include "ncurses_my_fun.h"
 
 void display_found(char *str)
 {

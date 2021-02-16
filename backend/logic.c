@@ -22,7 +22,7 @@ typedef struct books book_t;
 
 int book_index=0; 
 
-int indexx=0;
+int index=0;
 
 
 book_t *load_data_base()
@@ -61,9 +61,9 @@ book_t *load_data_base()
     fscanf(db, " \"%[^\"]\",", number_string);
     sscanf(number_string, "%d", &first_book->lent);
     fscanf(db, " \"%[^\"]\" ", first_book->whom_l);
-    first_book->index_number=indexx;
+    first_book->index_number=index;
     first_book->next=NULL;
-    indexx++;
+    index++;
 
 
     book_t *previous_book=first_book;
@@ -93,8 +93,8 @@ book_t *load_data_base()
         fscanf(db, " \"%[^\"]\",", number_string);
         sscanf(number_string, "%d", &new_book->lent);
         fscanf(db, " \"%[^\"]\" ", new_book->whom_l);
-        new_book->index_number=indexx;
-        indexx++;
+        new_book->index_number=index;
+        index++;
         previous_book=new_book;
 
     }
@@ -161,9 +161,9 @@ void user_add_data(book_t *f_book, char *title, char *author, char *red, char *w
         f_book->lent=0; 
         strcpy(f_book->whom_l, " ");
     } 
-    f_book->index_number=indexx;
+    f_book->index_number=index;
     f_book->next=NULL;
-    indexx++;
+    index++;
 }
 
 

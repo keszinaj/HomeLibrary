@@ -4,8 +4,8 @@
 #include <ncurses.h>
 #include<form.h>
 #include<menu.h>
-#include "../backend/logic.h"
-#include "../backend/ncurses_my_fun.h"
+#include "logic.h"
+#include "ncurses_my_fun.h"
 
 void display_lent_books(book_t *first_book);
 
