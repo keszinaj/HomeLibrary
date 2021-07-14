@@ -1,5 +1,6 @@
 # HomeLibrary
-This is simple program to manege your home library.
+![Screenshot from 2021-07-14 15-26-15](https://user-images.githubusercontent.com/58864317/125614505-b9dcb88c-1da2-4696-80c4-135601b1b4d2.png)
+#### This is simple program to manege your home library.
 
 # Installation
 1. You must have gcc compiler 
