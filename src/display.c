@@ -35,7 +35,7 @@ int print_menu(book_t *first_book)
 	//print my asci logo and other info
 	int pos=4;
 	 FILE* fp;
-    fp = fopen("./logoasci.txt", "r");
+    fp = fopen("../assets/logoasci.txt", "r");
     if (fp == NULL) {
       exit(-1);
     }

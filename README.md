@@ -17,6 +17,7 @@ If you have problem with installation check out this tutorial:
 4. Compile using make
 
  ```bash
+    cd src
     make
 ```
 5. Run:

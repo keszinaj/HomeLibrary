@@ -28,7 +28,7 @@ int index=0;
 book_t *load_data_base()
 {
     FILE *db;
-    db=fopen("./database.txt", "r");
+    db=fopen("../assets/database.txt", "r");
     if(db==NULL) //error handling
     {
         exit(-1);
@@ -220,7 +220,7 @@ book_t *save(book_t *book_list)
 {
     FILE *db;
     book_t *f_book =book_list;
-    db=fopen("database.txt", "w+");
+    db=fopen("../assets/database.txt", "w+");
     if(db==NULL) 
     {
         exit(-1);
