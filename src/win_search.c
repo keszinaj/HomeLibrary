@@ -170,7 +170,7 @@ void search_pop_up()
 	win_form = derwin(win_body, 6, 48, 2, 1);
 	assert(win_form != NULL);
 	box(win_form, 0, 0);
-	mvwprintw(win_body, 9, 2, "Press Enter to search F1 to exit");
+	mvwprintw(win_body, 9, 2, "Press Enter to search");
 	
 	fields[0] = new_field(1, 10, 0, 0, 0, 0);
 	fields[1] = new_field(1, 30, 0, 10, 0, 0);

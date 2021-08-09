@@ -62,7 +62,7 @@ void display_info_win()
 	win=newwin(20, 78, 1, 1);
 	box(win, 0, 0);
 
-	print_in_middle(win, 1, 0, 78, "Information about program");
+	print_in_middle(win, 1, 0, 78, "Information about the program");
 
 	//draw line
 	mvwaddch(win, 2, 0, ACS_LTEE);
@@ -70,7 +70,7 @@ void display_info_win()
 	mvwaddch(win, 2, 78, ACS_RTEE);
 
 	mvwprintw(win,5, 6, "Made by keszianj.");
-	mvprintw(LINES - 2, 0, "Press any key to exit");
+	mvprintw(LINES - 2, 0, "Press any key to continue.");
 	wrefresh(win);
 
 	refresh();
@@ -80,7 +80,7 @@ void display_info_win()
 void dispaly_ssaved_window()
 {
 	mvprintw(LINES/2-2,COLS/2-7, "SAVED CHANGES");
-	mvprintw(LINES - 11, COLS/2-11, "Press any key to exit.");
+	mvprintw(LINES - 11, COLS/2-11, "Press any key to continue.");
 	refresh();
 	getch();
 }
@@ -88,7 +88,7 @@ void dispaly_ssaved_window()
 void dispaly_delated_window()
 {
 	mvprintw(LINES/2-2,COLS/2-5, "DELETED");
-	mvprintw(LINES - 11, COLS/2-11, "Press any key to exit.");
+	mvprintw(LINES - 11, COLS/2-11, "Press any key to continue.");
 	refresh();
 	getch();
 }
@@ -96,7 +96,7 @@ void dispaly_new_book_saved()
 {
 	curs_set(0);
 	mvprintw(LINES/2-2,COLS/2-5, "Saved");
-	mvprintw(LINES - 11, COLS/2-16, "New book added press F1 to exit");
+	mvprintw(LINES - 11, COLS/2-16, "New book added press F1 to continue.");
 
 	refresh();
 }
